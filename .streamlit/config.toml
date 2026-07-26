@@ -1,8 +1,12 @@
 [server]
-# Prevent Streamlit watcher from aggressively scanning deep site-packages like transformers/torchvision
-fileWatcherType = "poll"
+# Disable file watcher in production cloud containers to prevent GIL lockup on heavy ML packages
+fileWatcherType = "none"
 runOnSave = false
-headless = false
+headless = true
+address = "0.0.0.0"
+port = 8501
+enableCORS = false
+enableXsrfProtection = false
 
 [browser]
 gatherUsageStats = false

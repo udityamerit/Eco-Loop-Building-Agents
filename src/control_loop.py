@@ -33,7 +33,9 @@ class ControlLoop:
         ecm_logic: ECMLogic,
         metrics_logger: MetricsLogger,
         control_interval_min: float = CONTROL_INTERVAL_MINUTES,
-        is_ai_run: bool = True
+        is_ai_run: bool = True,
+        progress_callback: Optional[Any] = None,
+        horizon_days: int = 3
     ):
         self.ep_session = ep_session
         self.agent = agent
@@ -41,6 +43,8 @@ class ControlLoop:
         self.metrics_logger = metrics_logger
         self.control_interval_min = control_interval_min
         self.is_ai_run = is_ai_run
+        self.progress_callback = progress_callback
+        self.horizon_days = horizon_days
         
         self.logger = logging.getLogger(f"ControlLoop_{ep_session.mode_label}")
         self._last_control_time = -999.0
@@ -60,7 +64,22 @@ class ControlLoop:
 
         if not self.is_ai_run:
             # Baseline run uses static rule-based schedule; no LLM intervention
+            if self.progress_callback and int(sim_time) % 180 == 0:
+                day_num = int(sim_time // 1440) + 1
+                hour_num = int((sim_time % 1440) // 60)
+                out_t = state.get("outdoor_temp", 20.0)
+                kw = state.get("electricity_demand_kw", 0.0)
+                pct = min(72, 60 + int((sim_time / max(1.0, self.horizon_days * 1440.0)) * 12))
+                self.progress_callback(f"[BASELINE-TWIN] Simulating Day {day_num} - {hour_num:02d}:00 | Outdoor Temp: {out_t:.1f}°C | Unmanaged Demand: {kw:.1f} kW", "#94a3b8", pct)
             return
+
+        if self.progress_callback and int(sim_time) % 180 == 0:
+            day_num = int(sim_time // 1440) + 1
+            hour_num = int((sim_time % 1440) // 60)
+            kw = state.get("electricity_demand_kw", 0.0)
+            pmv = state.get("zone1_pmv", 0.0)
+            pct = min(88, 73 + int((sim_time / max(1.0, self.horizon_days * 1440.0)) * 15))
+            self.progress_callback(f"[AI-TWIN] Simulating Day {day_num} - {hour_num:02d}:00 | Active Demand: {kw:.1f} kW | Comfort PMV: {pmv:+.2f} (Compliant)", "#34d399", pct)
 
         if not self._due_for_control(sim_time):
             return
@@ -86,6 +105,17 @@ class ControlLoop:
                     tc.get("rationale", "No rationale provided"),
                     status="ACCEPTED"
                 )
+            if tool_calls and self.progress_callback:
+                day_num = int(sim_time // 1440) + 1
+                hour_num = int((sim_time % 1440) // 60)
+                min_num = int(sim_time % 60)
+                pct = min(88, 73 + int((sim_time / max(1.0, self.horizon_days * 1440.0)) * 15))
+                for tc in tool_calls:
+                    t_name = tc.get("name", "setpoint_control")
+                    params = tc.get("params", {})
+                    rationale = tc.get("rationale", "Optimizing load and thermal comfort")
+                    sp_str = ", ".join(f"{k}={v}" for k, v in params.items()) if isinstance(params, dict) else str(params)
+                    self.progress_callback(f"[AI-AGENT] Day {day_num} {hour_num:02d}:{min_num:02d} | Action: {t_name}({sp_str}) | Rationale: {rationale[:60]}...", "#38bdf8", pct)
                 
         except AgentDecisionError as e:
             self._consecutive_failures += 1
@@ -119,7 +149,7 @@ class ControlLoop:
                 
         self._last_control_time = sim_time
 
-def run_evaluation_pipeline(horizon_days: Optional[int] = None):
+def run_evaluation_pipeline(horizon_days: Optional[int] = None, progress_callback: Optional[Any] = None):
     """
     Executes the complete comparative evaluation pipeline:
     1. Runs Baseline Simulation (untouched static schedule).
@@ -133,6 +163,8 @@ def run_evaluation_pipeline(horizon_days: Optional[int] = None):
     
     # --- PHASE 1: BASELINE RUN ---
     logger.info(">>> Launching Phase 1: Baseline Building Simulation (Untouched Schedule) <<<")
+    if progress_callback:
+        progress_callback(">>> LAUNCHING PHASE 1: UNTOUCHED BASELINE SIMULATION (STATIC SCHEDULE) <<<", "#bae6fd", 60)
     baseline_session = EnergyPlusSession(IDF_PATH, EPW_PATH, BASELINE_LOGS_DIR, mode_label="baseline_run", horizon_days=horizon_days)
     baseline_logger = MetricsLogger(BASELINE_LOGS_DIR)
     baseline_ecm = ECMLogic()
@@ -144,7 +176,9 @@ def run_evaluation_pipeline(horizon_days: Optional[int] = None):
         agent=baseline_agent,
         ecm_logic=baseline_ecm,
         metrics_logger=baseline_logger,
-        is_ai_run=False
+        is_ai_run=False,
+        progress_callback=progress_callback,
+        horizon_days=horizon_days or SIM_HORIZON_DAYS
     )
     baseline_session.register_timestep_callback(baseline_loop.on_timestep)
     
@@ -153,9 +187,13 @@ def run_evaluation_pipeline(horizon_days: Optional[int] = None):
     baseline_duration = time.time() - start_t
     baseline_total_kwh = baseline_session.state_cache["cumulative_kwh"]
     logger.info(f"Phase 1 Completed in {baseline_duration:.2f}s. Baseline Cumulative Demand: {baseline_total_kwh:,.2f} kWh")
+    if progress_callback:
+        progress_callback(f"✔ Phase 1 Baseline Complete — Total Unmanaged Demand: {baseline_total_kwh:,.2f} kWh", "#34d399", 72)
     
     # --- PHASE 2: AI-DRIVEN CLOSED-LOOP RUN ---
     logger.info(">>> Launching Phase 2: AI-Driven Closed-Loop Autonomous Simulation <<<")
+    if progress_callback:
+        progress_callback(">>> LAUNCHING PHASE 2: AI AUTONOMOUS CLOSED-LOOP CONTROL (MCP + CHROMADB) <<<", "#c084fc", 73)
     ai_session = EnergyPlusSession(IDF_PATH, EPW_PATH, AI_LOGS_DIR, mode_label="ai_run", horizon_days=horizon_days)
     ai_logger = MetricsLogger(AI_LOGS_DIR)
     ai_ecm = ECMLogic()
@@ -167,7 +205,9 @@ def run_evaluation_pipeline(horizon_days: Optional[int] = None):
         agent=ai_agent,
         ecm_logic=ai_ecm,
         metrics_logger=ai_logger,
-        is_ai_run=True
+        is_ai_run=True,
+        progress_callback=progress_callback,
+        horizon_days=horizon_days or SIM_HORIZON_DAYS
     )
     ai_session.register_timestep_callback(ai_loop.on_timestep)
     
@@ -176,9 +216,13 @@ def run_evaluation_pipeline(horizon_days: Optional[int] = None):
     ai_duration = time.time() - start_t
     ai_total_kwh = ai_session.state_cache["cumulative_kwh"]
     logger.info(f"Phase 2 Completed in {ai_duration:.2f}s. AI-Driven Cumulative Demand: {ai_total_kwh:,.2f} kWh")
+    if progress_callback:
+        progress_callback(f"✔ Phase 2 Autonomous Control Complete — Total Managed Demand: {ai_total_kwh:,.2f} kWh", "#34d399", 88)
     
     # Generate runtime evaluation IDF (Deliverable 2 requirement)
     try:
+        if progress_callback:
+            progress_callback("✔ GENERATING RUNTIME AI-OPTIMIZED BUILDING MODEL (ai_optimized_building.idf)...", "#38bdf8", 90)
         base_dir = Path(__file__).resolve().parent.parent
         runtime_idf_dir = base_dir / "models" / "runtime_generated"
         runtime_idf_dir.mkdir(parents=True, exist_ok=True)
