@@ -37,6 +37,8 @@ Commercial buildings consume approximately **40% of global energy** and represen
 
 The Eco-Loop architecture is designed around an asynchronous, multi-layered closed control loop. The diagram below illustrates how physical sensor feedback flows through predictive ML models and semantic memory into the LLM reasoning agent, which in turn emits validated actuator setpoints back into the physical environment.
 
+![alt text](architecture.png)
+
 ```mermaid
 graph TD
     subgraph Physical_Environment ["🏢 Physical Building / Digital Twin"]
