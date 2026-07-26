@@ -25,3 +25,6 @@
 2026-07-26 15:05:14,322 - ERROR - [SimTime: 15.0m | 2026-07-15 00:15:00] Agent decision error (Attempt 1): Tool validation failed: Cooling setpoint 10.0°C outside allowed bounds [21.0, 26.0]°C
 2026-07-26 15:05:14,323 - ERROR - [SimTime: 15.0m | 2026-07-15 00:15:00] Retry failed: Tool validation failed: Cooling setpoint 10.0°C outside allowed bounds [21.0, 26.0]°C
 2026-07-26 15:05:14,438 - ERROR - [SimTime: 30.0m | 2026-07-15 00:30:00] Agent decision error (Attempt 3): Tool validation failed: Cooling setpoint 10.0°C outside allowed bounds [21.0, 26.0]°C
+2026-07-26 15:54:55,840 - ERROR - [SimTime: 15.0m | 2026-07-15 00:15:00] Agent decision error (Attempt 1): Tool validation failed: Cooling setpoint 10.0°C outside allowed bounds [21.0, 26.0]°C
+2026-07-26 15:54:55,841 - ERROR - [SimTime: 15.0m | 2026-07-15 00:15:00] Retry failed: Tool validation failed: Cooling setpoint 10.0°C outside allowed bounds [21.0, 26.0]°C
+2026-07-26 15:54:55,871 - ERROR - [SimTime: 30.0m | 2026-07-15 00:30:00] Agent decision error (Attempt 3): Tool validation failed: Cooling setpoint 10.0°C outside allowed bounds [21.0, 26.0]°C

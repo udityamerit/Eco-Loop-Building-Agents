@@ -141,51 +141,6 @@ All telemetry and decision rationales are streamed synchronously to local CSV lo
 
 ---
 
-## 📁 Repository Structure
-
-```text
-eco-loop-building-agents/
-├── main.py                          # 🚀 Top-Level Entrypoint Script (Executes 3-Day Pipeline)
-├── README.md                        # Enterprise Technical Documentation & Working Flow
-├── ARCHITECTURE.md                  # System Architecture Document (Grading Specification)
-├── agent_upgradation_plan.md        # Cloud-Native & ML Upgradation Roadmap
-├── requirements.txt                 # Python Project Dependencies
-├── /models/
-│   ├── baseline_building.idf        # Authored DOE Reference Medium Office Building Model
-│   ├── baseline_weather.epw         # Standard Chicago Weather File (.epw)
-│   └── /runtime_generated/          # Saved Actuator-State Snapshots per Control Cycle
-├── /src/
-│   ├── __init__.py
-│   ├── config.py                    # Comfort Bounds, Control Intervals, and File Paths
-│   ├── energyplus_wrapper.py        # EnergyPlus API Wrapper with Dual-Mode Simulation Fallback
-│   ├── mcp_server.py                # MCP Server Exposing Validated Simulation Tools to the LLM
-│   ├── mcp_client_agent.py          # LLM Reasoning Client with Prompt Caching & Self-Correction
-│   ├── ecm_logic.py                 # Comfort Boundary Validation, Actuator Rules & Watchdog
-│   ├── control_loop.py              # Closed-Loop Orchestrator (Simulation Evaluation Pipeline)
-│   ├── metrics_logger.py            # Timestep Telemetry & Decision Audit Trail Logger
-│   ├── ml_forecaster.py             # Hybrid scikit-learn ML Risk Forecaster (GridSearchCV)
-│   ├── memory_engine.py             # Semantic Vector Memory Store (ChromaDB + MMR Retrieval)
-│   ├── analysis_agent.py            # Autonomous Analysis Agent & ReportLab PDF Generator
-│   ├── firebase_client.py           # Real-time Cloud/Local Fallback Synchronization Client
-│   └── ec2_worker.py                # Distributed Cloud Worker for Serverless Execution
-├── /dashboard/
-│   ├── __init__.py
-│   └── app.py                       # Interactive Streamlit Command Center & PDF Export UI
-├── /deploy/
-│   └── aws_infrastructure.yaml      # Cloud-Native Serverless Deployment Specs (AWS ECS / Lambda)
-├── /logs/
-│   ├── baseline_run/                # Untouched Static Schedule Simulation Logs (metrics.csv)
-│   ├── ai_run/                      # AI-Driven Autonomous Closed-Loop Logs (metrics.csv, decisions.csv)
-│   └── firebase_fallback/           # Offline Real-Time Emulation Data Stores
-├── /reports/
-│   └── EcoLoop_Executive_Report.pdf # Autonomously Generated Certified Executive Audit Report
-└── /tests/
-    ├── __init__.py
-    ├── test_control_loop.py         # Control Loop, Watchdog, and Constraint Validation Tests
-    └── test_upgraded_engine.py      # Cloud Fallback, ML Forecaster, and Semantic Memory Tests
-```
-
----
 
 ## 🚀 Setup & Quickstart Guide
 

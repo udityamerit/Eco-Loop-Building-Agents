@@ -11607,5 +11607,404 @@
     "rationale": "Building state and thermal comfort are stable within optimal bounds. Maintaining 24.0\u00b0C cooling setpoint.",
     "status": "ACCEPTED",
     "updated_at": "2026-07-26T10:24:25.223350"
+  },
+  {
+    "sim_time_min": 3931.0,
+    "timestamp": "2026-07-17 17:31:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "cooling",
+      "value": 24.0
+    },
+    "rationale": "Building state and thermal comfort are stable within optimal bounds. Maintaining 24.0\u00b0C cooling setpoint.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:24:46.415544"
+  },
+  {
+    "sim_time_min": 30.0,
+    "timestamp": "2026-07-15 00:30:00",
+    "tool_called": "watchdog_failover",
+    "params": {
+      "zone1_cooling_sp": 24.0,
+      "zone1_heating_sp": 20.0,
+      "zone1_lighting_fraction": 1.0
+    },
+    "rationale": "Watchdog automatic override after repeated validation failures",
+    "status": "WATCHDOG_OVERRIDE",
+    "updated_at": "2026-07-26T10:24:55.873165"
+  },
+  {
+    "sim_time_min": 3946.0,
+    "timestamp": "2026-07-17 17:46:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "cooling",
+      "value": 24.0
+    },
+    "rationale": "Building state and thermal comfort are stable within optimal bounds. Maintaining 24.0\u00b0C cooling setpoint.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:24:56.965080"
+  },
+  {
+    "sim_time_min": 3961.0,
+    "timestamp": "2026-07-17 18:01:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 50
+      }
+    },
+    "rationale": "Grid carbon peak (589 gCO2/kWh) and zone unoccupied (0%). Shedding 50% lighting load.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:24:57.567193"
+  },
+  {
+    "sim_time_min": 3976.0,
+    "timestamp": "2026-07-17 18:16:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 50
+      }
+    },
+    "rationale": "Grid carbon peak (583 gCO2/kWh) and zone unoccupied (0%). Shedding 50% lighting load.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:24:58.197307"
+  },
+  {
+    "sim_time_min": 3991.0,
+    "timestamp": "2026-07-17 18:31:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 50
+      }
+    },
+    "rationale": "Grid carbon peak (576 gCO2/kWh) and zone unoccupied (0%). Shedding 50% lighting load.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:24:58.814457"
+  },
+  {
+    "sim_time_min": 4006.0,
+    "timestamp": "2026-07-17 18:46:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 50
+      }
+    },
+    "rationale": "Grid carbon peak (568 gCO2/kWh) and zone unoccupied (0%). Shedding 50% lighting load.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:24:59.482337"
+  },
+  {
+    "sim_time_min": 4021.0,
+    "timestamp": "2026-07-17 19:01:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 50
+      }
+    },
+    "rationale": "Grid carbon peak (559 gCO2/kWh) and zone unoccupied (0%). Shedding 50% lighting load.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:25:00.961482"
+  },
+  {
+    "sim_time_min": 4036.0,
+    "timestamp": "2026-07-17 19:16:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 50
+      }
+    },
+    "rationale": "Grid carbon peak (550 gCO2/kWh) and zone unoccupied (0%). Shedding 50% lighting load.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:25:01.905471"
+  },
+  {
+    "sim_time_min": 4051.0,
+    "timestamp": "2026-07-17 19:31:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 50
+      }
+    },
+    "rationale": "Grid carbon peak (540 gCO2/kWh) and zone unoccupied (0%). Shedding 50% lighting load.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:25:03.556384"
+  },
+  {
+    "sim_time_min": 4066.0,
+    "timestamp": "2026-07-17 19:46:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 50
+      }
+    },
+    "rationale": "Grid carbon peak (530 gCO2/kWh) and zone unoccupied (0%). Shedding 50% lighting load.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:25:05.212741"
+  },
+  {
+    "sim_time_min": 4081.0,
+    "timestamp": "2026-07-17 20:01:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:25:06.215940"
+  },
+  {
+    "sim_time_min": 4096.0,
+    "timestamp": "2026-07-17 20:16:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:25:07.029195"
+  },
+  {
+    "sim_time_min": 4111.0,
+    "timestamp": "2026-07-17 20:31:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:25:08.104478"
+  },
+  {
+    "sim_time_min": 4126.0,
+    "timestamp": "2026-07-17 20:46:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:25:11.420197"
+  },
+  {
+    "sim_time_min": 4141.0,
+    "timestamp": "2026-07-17 21:01:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:25:14.003169"
+  },
+  {
+    "sim_time_min": 4156.0,
+    "timestamp": "2026-07-17 21:16:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:25:15.351065"
+  },
+  {
+    "sim_time_min": 4171.0,
+    "timestamp": "2026-07-17 21:31:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:25:16.407440"
+  },
+  {
+    "sim_time_min": 4186.0,
+    "timestamp": "2026-07-17 21:46:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:25:17.297756"
+  },
+  {
+    "sim_time_min": 4201.0,
+    "timestamp": "2026-07-17 22:01:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:25:18.808466"
+  },
+  {
+    "sim_time_min": 4216.0,
+    "timestamp": "2026-07-17 22:16:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:25:20.976098"
+  },
+  {
+    "sim_time_min": 4231.0,
+    "timestamp": "2026-07-17 22:31:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:25:22.040638"
+  },
+  {
+    "sim_time_min": 4246.0,
+    "timestamp": "2026-07-17 22:46:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:25:24.009424"
+  },
+  {
+    "sim_time_min": 4261.0,
+    "timestamp": "2026-07-17 23:01:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:25:28.622260"
+  },
+  {
+    "sim_time_min": 4276.0,
+    "timestamp": "2026-07-17 23:16:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:25:31.175679"
+  },
+  {
+    "sim_time_min": 4291.0,
+    "timestamp": "2026-07-17 23:31:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:25:32.625584"
+  },
+  {
+    "sim_time_min": 4306.0,
+    "timestamp": "2026-07-17 23:46:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:25:34.105191"
   }
 ]
