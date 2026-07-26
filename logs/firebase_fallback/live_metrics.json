@@ -82938,5 +82938,27 @@
     "grid_carbon_gco2_kwh": 320.0,
     "occupancy_pct": 0.0,
     "updated_at": "2026-07-26T16:06:57.768693"
+  },
+  {
+    "sim_time_min": 15.0,
+    "timestamp": "2026-07-15 00:15:00",
+    "interval_kwh": 0.25,
+    "cumulative_kwh": 0.0,
+    "zone1_temp": 23.0,
+    "zone1_pmv": -0.05,
+    "grid_carbon_gco2_kwh": 320.0,
+    "occupancy_pct": 0.0,
+    "updated_at": "2026-07-26T16:18:08.908016"
+  },
+  {
+    "sim_time_min": 30.0,
+    "timestamp": "2026-07-15 00:30:00",
+    "interval_kwh": 0.25,
+    "cumulative_kwh": 0.0,
+    "zone1_temp": 23.0,
+    "zone1_pmv": -0.05,
+    "grid_carbon_gco2_kwh": 320.0,
+    "occupancy_pct": 0.0,
+    "updated_at": "2026-07-26T16:18:09.542801"
   }
 ]

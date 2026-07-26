@@ -14203,5 +14203,18 @@
     "rationale": "Watchdog automatic override after repeated validation failures",
     "status": "WATCHDOG_OVERRIDE",
     "updated_at": "2026-07-26T16:06:58.114942"
+  },
+  {
+    "sim_time_min": 30.0,
+    "timestamp": "2026-07-15 00:30:00",
+    "tool_called": "watchdog_failover",
+    "params": {
+      "zone1_cooling_sp": 24.0,
+      "zone1_heating_sp": 20.0,
+      "zone1_lighting_fraction": 1.0
+    },
+    "rationale": "Watchdog automatic override after repeated validation failures",
+    "status": "WATCHDOG_OVERRIDE",
+    "updated_at": "2026-07-26T16:18:09.953890"
   }
 ]
