@@ -12,6 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR))
 
 from src.config import BASELINE_LOGS_DIR, AI_LOGS_DIR, PMV_LOWER_BOUND, PMV_UPPER_BOUND
+from src.analysis_agent import AnalysisAgent
 
 st.set_page_config(
     page_title="Eco-Loop Physical AI | Digital Twin Command Center",
@@ -165,9 +166,24 @@ if not baseline_metrics_file.exists() or not ai_metrics_file.exists():
             st.rerun()
     st.stop()
 
-# Load datasets
-@st.cache_data
+# Load datasets from Firebase Real-Time DB or CSV fallback
+@st.cache_data(ttl=60)
 def load_data():
+    try:
+        from src.firebase_client import FirebaseClient
+        fb = FirebaseClient()
+        recent = fb.fetch_recent_metrics(limit=5000)
+        decisions_recent = fb.fetch_recent_decisions(limit=1000)
+        if recent and len(recent) > 10:
+            df_fb = pd.DataFrame(recent)
+            # If we have live firebase metrics, use them as df_ai
+            df_base = pd.read_csv(baseline_metrics_file) if baseline_metrics_file.exists() else df_fb
+            df_ai = df_fb
+            df_dec = pd.DataFrame(decisions_recent) if decisions_recent else (pd.read_csv(ai_decisions_file) if ai_decisions_file.exists() else pd.DataFrame())
+            return df_base, df_ai, df_dec
+    except Exception as e:
+        pass
+    
     df_base = pd.read_csv(baseline_metrics_file)
     df_ai = pd.read_csv(ai_metrics_file)
     df_dec = pd.read_csv(ai_decisions_file) if ai_decisions_file.exists() else pd.DataFrame()
@@ -292,11 +308,12 @@ with col5:
 st.markdown("<br>", unsafe_allow_html=True)
 
 # --- SECTION 2: COMPARATIVE PLOTLY VISUALIZATIONS & PROFESSIONAL LIVE STREAMING ---
-tab_stream, tab_energy, tab_comfort, tab_demand = st.tabs([
+tab_stream, tab_energy, tab_comfort, tab_demand, tab_report = st.tabs([
     "🔴 Real-Time Digital Twin Stream", 
     "📈 Cumulative Energy Analytics", 
     "🌡️ Fanger PMV Comfort Traces", 
-    "⚡ Demand & Grid Carbon Signals"
+    "⚡ Demand & Grid Carbon Signals",
+    "📋 AI Executive Report & PDF"
 ])
 
 with tab_stream:
@@ -547,6 +564,35 @@ with tab_demand:
         plot_bgcolor="rgba(15, 23, 42, 0.4)"
     )
     st.plotly_chart(fig_demand, use_container_width=True)
+
+with tab_report:
+    st.markdown("### 📋 Autonomous AI Executive Audit & Performance Report")
+    st.markdown("This executive analysis report is generated autonomously by our **Analysis Agent** analyzing physical building telemetry, ML predictions, and MCP decision audits. Certified for LEED & ESG facility review.")
+    
+    analysis_agent = AnalysisAgent(BASE_DIR)
+    results = analysis_agent.analyze_performance()
+    
+    col_rep_btn, col_rep_info = st.columns([1, 2])
+    with col_rep_btn:
+        try:
+            pdf_path = analysis_agent.generate_pdf_report(results)
+            if os.path.exists(pdf_path):
+                with open(pdf_path, "rb") as pdf_file:
+                    st.download_button(
+                        label="📥 Download Certified PDF Executive Report",
+                        data=pdf_file,
+                        file_name="EcoLoop_Executive_Report.pdf",
+                        mime="application/pdf",
+                        type="primary",
+                        use_container_width=True
+                    )
+        except Exception as pdf_err:
+            st.error(f"Could not generate PDF: {pdf_err}")
+    with col_rep_info:
+        st.success("✅ **Report Ready**: Download the enterprise PDF report above or review the interactive markdown breakdown below.")
+        
+    st.markdown("---")
+    st.markdown(analysis_agent.generate_markdown_report(results))
 
 # --- SECTION 3: AUDITABLE AGENT DECISION LOG ---
 st.markdown("---")

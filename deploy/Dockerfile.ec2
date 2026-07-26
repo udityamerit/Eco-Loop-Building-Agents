@@ -1,0 +1,43 @@
+# Eco-Loop Building Agents: AWS EC2 Continuous Simulation Container
+# Base Image: Python 3.10 Slim Linux
+FROM python:3.10-slim
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    DEBIAN_FRONTEND=noninteractive \
+    PORT=8000 \
+    OLLAMA_BASE_URL="http://localhost:11434/v1"
+
+# Install system dependencies required for EnergyPlus and physical simulation
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    wget \
+    libxml2 \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory inside container
+WORKDIR /opt/ecoloop
+
+# Copy Python requirements and install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir fastapi uvicorn pydantic
+
+# Copy project source code and simulation models
+COPY src/ ./src/
+COPY models/ ./models/
+COPY dashboard/ ./dashboard/
+
+# Expose HTTP port for AWS VPC VPC-internal communication with Lambda orchestrator
+EXPOSE 8000
+
+# Health check to ensure simulation worker is responsive
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Launch continuous simulation API worker
+CMD ["python", "-m", "uvicorn", "src.ec2_worker:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -5,10 +5,15 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 
+try:
+    from src.firebase_client import FirebaseClient
+except ImportError:
+    FirebaseClient = None
+
 class MetricsLogger:
     """
     Handles logging of timestep simulation metrics and agent decision audit trails.
-    Writes structured CSV datasets for Streamlit dashboard ingestion and offline analysis.
+    Writes structured CSV datasets and synchronizes in real time with Firebase Cloud/Local storage.
     """
     def __init__(self, output_dir: Path, start_datetime: Optional[datetime] = None):
         self.output_dir = Path(output_dir)
@@ -28,6 +33,9 @@ class MetricsLogger:
             handler.setFormatter(formatter)
             self.logger.addHandler(handler)
             self.logger.setLevel(logging.INFO)
+            
+        # Initialize real-time Firebase sync client
+        self.firebase = FirebaseClient() if FirebaseClient else None
 
     def _init_files(self):
         # Initialize metrics CSV with headers
@@ -61,20 +69,33 @@ class MetricsLogger:
         return current_dt.strftime("%Y-%m-%d %H:%M:%S")
 
     def log_metric(self, sim_time_min: float, state: Dict[str, Any]):
-        """Logs a single timestep building state reading into metrics.csv."""
+        """Logs a single timestep building state reading into metrics.csv and Firebase storage."""
         timestamp = self._sim_time_to_dt(sim_time_min)
+        z_temp = round(state.get("zone1_temp", 0.0), 3)
+        z_pmv = round(state.get("zone1_pmv", 0.0), 3)
+        i_kwh = round(state.get("interval_kwh", 0.0), 4)
+        c_kwh = round(state.get("cumulative_kwh", 0.0), 4)
+        occ = round(state.get("occupancy_pct", 0.0), 1)
+        carb = round(state.get("grid_carbon_gco2_kwh", 0.0), 1)
+        
         with open(self.metrics_file, mode="a", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
             writer.writerow([
                 timestamp,
                 round(sim_time_min, 2),
-                round(state.get("zone1_temp", 0.0), 3),
-                round(state.get("zone1_pmv", 0.0), 3),
-                round(state.get("interval_kwh", 0.0), 4),
-                round(state.get("cumulative_kwh", 0.0), 4),
-                round(state.get("occupancy_pct", 0.0), 1),
-                round(state.get("grid_carbon_gco2_kwh", 0.0), 1)
+                z_temp,
+                z_pmv,
+                i_kwh,
+                c_kwh,
+                occ,
+                carb
             ])
+            
+        if self.firebase:
+            try:
+                self.firebase.push_metric(sim_time_min, timestamp, i_kwh, c_kwh, z_temp, z_pmv, carb, occ)
+            except Exception as e:
+                self.logger.debug(f"Firebase metric sync skipped: {e}")
 
     def log_decision(
         self,
@@ -84,7 +105,7 @@ class MetricsLogger:
         rationale: str,
         status: str = "ACCEPTED"
     ):
-        """Logs an agent tool invocation and its rationale into decisions.csv."""
+        """Logs an agent tool invocation and its rationale into decisions.csv and Firebase storage."""
         timestamp = self._sim_time_to_dt(sim_time_min)
         params_str = json.dumps(params)
         with open(self.decisions_file, mode="a", newline="", encoding="utf-8") as f:
@@ -97,6 +118,12 @@ class MetricsLogger:
                 rationale,
                 status
             ])
+            
+        if self.firebase:
+            try:
+                self.firebase.push_decision(sim_time_min, timestamp, tool_called, params, rationale, status)
+            except Exception as e:
+                self.logger.debug(f"Firebase decision sync skipped: {e}")
 
     def log_error(self, sim_time_min: float, error_msg: str):
         """Logs exceptions and validation failures."""

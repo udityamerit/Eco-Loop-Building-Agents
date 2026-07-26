@@ -1,0 +1,166 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Eco-Loop Building Agents - Cloud-Native Hybrid-AI Physical Control Architecture.
+  Deploys EC2 Continuous Simulation environment and serverless Lambda orchestration layer in a secure VPC.
+
+Parameters:
+  EnvironmentName:
+    Type: String
+    Default: Production
+    Description: Environment stage name (e.g., Staging, Production)
+  InstanceType:
+    Type: String
+    Default: t3.medium
+    Description: EC2 instance type for EnergyPlus simulation worker
+  VpcCidr:
+    Type: String
+    Default: 10.0.0.0/16
+  SubnetCidr:
+    Type: String
+    Default: 10.0.1.0/24
+
+Resources:
+  # --- VPC & Networking ---
+  EcoLoopVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCidr
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-EcoLoopVPC
+
+  EcoLoopSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref EcoLoopVPC
+      CidrBlock: !Ref SubnetCidr
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-EcoLoopSubnet
+
+  # --- Security Groups ---
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for EC2 Continuous Simulation Worker
+      VpcId: !Ref EcoLoopVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 8000
+          ToPort: 8000
+          SourceSecurityGroupId: !GetAtt LambdaSecurityGroup.GroupId
+          Description: Allow internal API access strictly from AWS Lambda Orchestrator
+
+  LambdaSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for AWS Lambda Serverless Orchestrator
+      VpcId: !Ref EcoLoopVPC
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 8000
+          ToPort: 8000
+          DestinationSecurityGroupId: !GetAtt EC2SecurityGroup.GroupId
+          Description: Allow outbound API requests to EC2 Simulation Worker
+
+  # --- IAM Least-Privilege Roles ---
+  EC2WorkerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: FirebaseAndCloudWatchAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:*:*:*
+
+  EC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref EC2WorkerRole
+
+  LambdaOrchestratorRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+
+  # --- EC2 Continuous Simulation Worker ---
+  SimulationWorkerInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      ImageId: ami-0c7217cdde317cfec # Amazon Linux 2 / Ubuntu 22.04 LTS AMI
+      SubnetId: !Ref EcoLoopSubnet
+      SecurityGroupIds:
+        - !Ref EC2SecurityGroup
+      IamInstanceProfile: !Ref EC2InstanceProfile
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          apt-get update -y && apt-get install -y docker.io
+          systemctl start docker && systemctl enable docker
+          # Pull and run dockerized EC2 worker container
+          docker run -d --name ecoloop-worker -p 8000:8000 --restart always ecoloop-ec2-image:latest
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-SimulationWorkerInstance
+
+  # --- AWS Lambda Serverless Orchestration Layer ---
+  OrchestrationLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.10
+      CodeUri: ../
+      Timeout: 30
+      MemorySize: 512
+      Role: !GetAtt LambdaOrchestratorRole.Arn
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+        SubnetIds:
+          - !Ref EcoLoopSubnet
+      Environment:
+        Variables:
+          EC2_WORKER_URL: !Sub http://${SimulationWorkerInstance.PrivateIp}:8000
+          USE_LOCAL_FALLBACK: "false"
+      Events:
+        PeriodicControlSchedule:
+          Type: Schedule
+          Properties:
+            Schedule: rate(15 minutes)
+            Name: EcoLoopControlIntervalTrigger
+            Description: Triggers cognitive reasoning cycle every 15 simulated minutes
+
+Outputs:
+  EC2PrivateIp:
+    Description: Private IP of EC2 simulation worker
+    Value: !GetAtt SimulationWorkerInstance.PrivateIp
+  LambdaFunctionArn:
+    Description: ARN of Serverless Orchestration Lambda
+    Value: !GetAtt OrchestrationLambdaFunction.Arn

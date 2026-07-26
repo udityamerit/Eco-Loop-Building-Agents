@@ -1,6 +1,7 @@
 import json
 import logging
 from typing import List, Dict, Any, Optional
+
 from src.config import OLLAMA_BASE_URL, LLM_MODEL_NAME, LLM_TEMPERATURE
 
 try:
@@ -8,25 +9,53 @@ try:
     OPENAI_AVAILABLE = True
 except ImportError:
     OPENAI_AVAILABLE = False
+    class OpenAI:
+        def __init__(self, *args, **kwargs): pass
+
+try:
+    from src.memory_engine import SemanticMemoryEngine
+except ImportError:
+    SemanticMemoryEngine = None
 
 class MCPClientAgent:
     """
-    LLM reasoning agent orchestrating autonomous building energy optimization via MCP tool calls.
-    Features prompt prefix caching formatting, self-correction retries on invalid output,
-    and a dual-mode fallback reasoning engine when local Ollama endpoints are unreachable.
+    Reasoning Agent responsible for analyzing building state and issuing MCP tool calls.
+    Implements a dual-mode engine: connects to local Llama 3.1 LLM via OpenAI API,
+    and seamlessly falls back to a deterministic physical AI reasoning rule engine if LLM is offline.
+    Integrates Semantic Memory (ChromaDB + MMR) to recall past successful ECM actions.
     """
     def __init__(self, mcp_server):
-        self.mcp_server = mcp_server
+        self.server = mcp_server
         self.logger = logging.getLogger("MCPClientAgent")
-        self.tool_schemas = self.mcp_server.get_tool_schemas()
+        self.logger.setLevel(logging.INFO)
         
-        # System prompt formatted as stable prefix for KV-cache reuse
+        # Initialize Semantic Memory Engine
+        self.memory = SemanticMemoryEngine() if SemanticMemoryEngine else None
+        
+        # Retrieve JSON tool schemas from the MCP server
+        raw_tools = self.server.get_tools_definition() if hasattr(self.server, "get_tools_definition") else []
+        self.tool_schemas = [
+            {
+                "type": "function",
+                "function": {
+                    "name": t["name"],
+                    "description": t["description"],
+                    "parameters": t["inputSchema"]
+                }
+            }
+            for t in raw_tools
+        ]
+        
         self.system_prompt = (
-            "You are an autonomous building energy control agent. Your goals, in priority order:\n"
-            "1. Keep every zone's PMV thermal comfort index within the bounds returned by get_comfort_bounds() ([-0.5, 0.5]). This is a hard constraint, not a preference.\n"
-            "2. Subject to constraint 1, minimize total facility energy consumption and prefer shifting load away from high-carbon-intensity periods.\n"
-            "3. Prefer the smallest control action that achieves the goal — avoid large, abrupt setpoint swings between consecutive control cycles (make adjustments in increments of 0.5°C to 1.0°C).\n\n"
-            "You must act only through the provided tools. Never propose a setpoint value outside allowed bounds.\n\n"
+            "You are the autonomous Physical AI Reasoning Agent for an advanced commercial building Eco-Loop.\n"
+            "Your objective is to optimize energy efficiency and grid carbon emissions while strictly maintaining indoor thermal comfort.\n\n"
+            "### MANDATORY DOMAIN RULES:\n"
+            "1. Thermal Comfort Constraints: You MUST keep Zone 1 Fanger PMV index between -0.5 and +0.5. Never allow temp outside [20.0, 26.0]°C.\n"
+            "2. Grid Carbon Shedding: When grid carbon intensity is high (> 400 gCO2/kWh), aggressively reduce load by increasing cooling setpoints or reducing lighting in unoccupied zones.\n"
+            "3. Action Consistency: Always verify setpoint limits before calling tools. Do not oscillate setpoints rapidly between consecutive intervals.\n\n"
+            "### Available Tools:\n"
+            "- set_zone_setpoint: Adjust HVAC cooling/heating temperature setpoint in °C.\n"
+            "- apply_ecm: Execute an Energy Conservation Measure (e.g., reduce_lighting_load).\n\n"
             "### Example Scenario 1: High Carbon Peak, Comfort Normal\n"
             'State: {"zone1_temp": 22.5, "zone1_pmv": -0.1, "grid_carbon_gco2_kwh": 450, "occupancy_pct": 80}\n'
             'Action: Call set_zone_setpoint(zone_id="ZONE1", setpoint_type="cooling", value=23.5)\n'
@@ -42,7 +71,6 @@ class MCPClientAgent:
         if self.use_llm_api:
             try:
                 self.client = OpenAI(base_url=OLLAMA_BASE_URL, api_key="ollama", max_retries=0, timeout=0.5)
-                # Quick health check to prevent blocking timeouts during simulation loop
                 self.client.models.list(timeout=0.5)
                 self.logger.info(f"Connected to live OpenAI/Ollama endpoint at {OLLAMA_BASE_URL}")
             except Exception as e:
@@ -50,8 +78,7 @@ class MCPClientAgent:
                 self.use_llm_api = False
 
     def build_messages(self, state: Dict[str, Any], corrective_feedback: Optional[str] = None) -> List[Dict[str, str]]:
-        """Constructs prompt messages with compact JSON state snapshot."""
-        # Pre-aggregate and format compact state
+        """Constructs prompt messages with compact JSON state snapshot and retrieved MMR historical context."""
         compact_state = {
             "zone1_temp": round(state.get("zone1_temp", 23.0), 2),
             "zone1_pmv": round(state.get("zone1_pmv", 0.0), 2),
@@ -61,7 +88,20 @@ class MCPClientAgent:
             "sim_time_min": round(state.get("sim_time", 0.0), 1)
         }
         
-        user_content = f"Current Building State Snapshot: {json.dumps(compact_state)}\nAnalyze state and call appropriate control tools."
+        user_content = f"Current Building State Snapshot: {json.dumps(compact_state)}\n"
+        
+        # Retrieve relevant, diverse historical ECM actions via MMR
+        if self.memory:
+            try:
+                past_actions = self.memory.retrieve_mmr(state, top_k=2)
+                if past_actions:
+                    user_content += "\n### Semantic Memory Context (Past Successful Actions via MMR):\n"
+                    for pa in past_actions:
+                        user_content += f"- When state was [{pa['context_state']}], successful action was {json.dumps(pa['recommended_action'])} with rationale: \"{pa['rationale']}\"\n"
+            except Exception as e:
+                self.logger.debug(f"Memory MMR retrieval skipped: {e}")
+                
+        user_content += "\nAnalyze state and call appropriate control tools."
         if corrective_feedback:
             user_content += f"\n\nIMPORTANT CORRECTION FROM PREVIOUS ATTEMPT: {corrective_feedback}. Please re-issue a valid tool call respecting bounds."
             
@@ -92,67 +132,68 @@ class MCPClientAgent:
 
     def _dual_mode_heuristic_reasoning(self, state: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
-        Intelligent Dual-Mode Reasoning Engine.
-        Executes multi-objective decision policy when Ollama/LLM endpoint is offline,
-        producing identical structured MCP tool invocations and auditable rationales.
+        Deterministic physical AI fallback engine.
+        Executed when open-source LLM is offline or times out.
         """
+        tool_calls = []
         temp = state.get("zone1_temp", 23.0)
         pmv = state.get("zone1_pmv", 0.0)
-        occ = state.get("occupancy_pct", 0.0)
         grid_carbon = state.get("grid_carbon_gco2_kwh", 300.0)
+        occupancy = state.get("occupancy_pct", 80.0)
 
-        tool_calls = []
-
-        # Rule 1: Occupancy-based Lighting Shedding (ECM)
-        if occ < 10.0:
-            tool_calls.append({
-                "name": "apply_ecm",
-                "params": {"ecm_name": "reduce_lighting_load", "params": {"zone_id": "ZONE1", "reduction_pct": 60.0}},
-                "rationale": f"Zone occupancy is very low ({occ:.1f}%). Shedding 60% lighting load via apply_ecm to minimize baseline electrical consumption."
-            })
-        else:
-            tool_calls.append({
-                "name": "apply_ecm",
-                "params": {"ecm_name": "reduce_lighting_load", "params": {"zone_id": "ZONE1", "reduction_pct": 0.0}},
-                "rationale": f"Zone is occupied ({occ:.1f}%). Restoring normal lighting fraction."
-            })
-
-        # Rule 2: Multi-objective thermal comfort and carbon-aware HVAC setpoint optimization
-        if pmv > 0.35:
-            # Approaching upper comfort boundary -> lower cooling setpoint by 0.5°C
-            new_sp = max(22.0, temp - 0.5)
-            tool_calls.append({
-                "name": "set_zone_setpoint",
-                "params": {"zone_id": "ZONE1", "setpoint_type": "cooling", "value": round(new_sp, 1)},
-                "rationale": f"PMV index (+{pmv:.2f}) is approaching warm boundary (+0.5). Lowering cooling setpoint to {new_sp:.1f}°C to ensure comfort bounds are strictly respected."
-            })
-        elif pmv < -0.35:
-            # Approaching lower comfort boundary -> raise cooling setpoint
-            new_sp = min(25.5, temp + 0.5)
-            tool_calls.append({
-                "name": "set_zone_setpoint",
-                "params": {"zone_id": "ZONE1", "setpoint_type": "cooling", "value": round(new_sp, 1)},
-                "rationale": f"PMV index ({pmv:.2f}) is cool. Raising cooling setpoint to {new_sp:.1f}°C to prevent over-cooling and save energy."
-            })
-        elif grid_carbon > 450.0:
-            # Carbon peak load shedding: if comfort permits (PMV < +0.2), raise cooling setpoint
-            if pmv < 0.2:
-                new_sp = min(25.0, temp + 1.0)
+        # Rule 1: High Carbon Peak Demand Shedding
+        if grid_carbon > 400.0:
+            if pmv < 0.3 and temp < 25.0:
                 tool_calls.append({
                     "name": "set_zone_setpoint",
-                    "params": {"zone_id": "ZONE1", "setpoint_type": "cooling", "value": round(new_sp, 1)},
-                    "rationale": f"Grid carbon intensity is peaking ({grid_carbon:.0f} gCO2/kWh). Shifting electrical load by raising cooling setpoint to {new_sp:.1f}°C while PMV remains comfortable ({pmv:.2f})."
+                    "params": {"zone_id": "ZONE1", "setpoint_type": "cooling", "value": min(25.0, round(temp + 1.0, 1))},
+                    "rationale": f"Grid carbon peak ({grid_carbon:.0f} gCO2/kWh). Increasing cooling setpoint by 1.0°C to shed compressor electrical load while keeping PMV comfortably within bounds ({pmv:.2f} < 0.5)."
                 })
-        elif grid_carbon < 350.0 and occ > 50.0:
-            # Low carbon intensity + occupied -> pre-cool flush
+            if occupancy == 0.0:
+                tool_calls.append({
+                    "name": "apply_ecm",
+                    "params": {"ecm_name": "reduce_lighting_load", "params": {"zone_id": "ZONE1", "reduction_pct": 50}},
+                    "rationale": f"Grid carbon peak ({grid_carbon:.0f} gCO2/kWh) and zone unoccupied (0%). Shedding 50% lighting load."
+                })
+            elif occupancy < 30.0:
+                tool_calls.append({
+                    "name": "apply_ecm",
+                    "params": {"ecm_name": "reduce_lighting_load", "params": {"zone_id": "ZONE1", "reduction_pct": 25}},
+                    "rationale": f"Low zone occupancy ({occupancy:.0f}%). Dimming lighting by 25% during high grid carbon period."
+                })
+
+        # Rule 2: Thermal Comfort Boundary Enforcement (PMV Upper Limit)
+        elif pmv > 0.45 or temp > 25.5:
             tool_calls.append({
                 "name": "set_zone_setpoint",
-                "params": {"zone_id": "ZONE1", "setpoint_type": "cooling", "value": 23.5},
-                "rationale": f"Grid carbon intensity is low ({grid_carbon:.0f} gCO2/kWh). Maintaining optimal thermal setpoint (23.5°C) to pre-cool zone efficiently."
+                "params": {"zone_id": "ZONE1", "setpoint_type": "cooling", "value": max(22.0, round(temp - 1.0, 1))},
+                "rationale": f"Thermal comfort approaching upper boundary (PMV={pmv:.2f}, Temp={temp:.1f}°C). Lowering cooling setpoint by 1.0°C to restore optimal comfort."
             })
 
+        # Rule 3: Thermal Comfort Boundary Enforcement (PMV Lower Limit)
+        elif pmv < -0.45 or temp < 21.0:
+            tool_calls.append({
+                "name": "set_zone_setpoint",
+                "params": {"zone_id": "ZONE1", "setpoint_type": "heating", "value": min(21.5, round(temp + 1.0, 1))},
+                "rationale": f"Thermal comfort approaching lower boundary (PMV={pmv:.2f}, Temp={temp:.1f}°C). Increasing heating setpoint by 1.0°C."
+            })
+
+        # Rule 4: Normal Steady-State Optimization
+        else:
+            if occupancy == 0.0:
+                tool_calls.append({
+                    "name": "apply_ecm",
+                    "params": {"ecm_name": "reduce_lighting_load", "params": {"zone_id": "ZONE1", "reduction_pct": 40}},
+                    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy."
+                })
+            else:
+                tool_calls.append({
+                    "name": "set_zone_setpoint",
+                    "params": {"zone_id": "ZONE1", "setpoint_type": "cooling", "value": 23.5},
+                    "rationale": f"Grid carbon intensity is low ({grid_carbon:.0f} gCO2/kWh). Maintaining optimal thermal setpoint (23.5°C) to pre-cool zone efficiently."
+                })
+
         if not tool_calls:
-            # Default stability check
             tool_calls.append({
                 "name": "set_zone_setpoint",
                 "params": {"zone_id": "ZONE1", "setpoint_type": "cooling", "value": 24.0},
@@ -165,7 +206,9 @@ class MCPClientAgent:
         """
         Main decision method invoked every control cycle.
         Attempts LLM API call with retry on error; falls back to dual-mode reasoning if API is unavailable.
+        Stores successful actions in Semantic Memory (ChromaDB + MMR).
         """
+        tool_calls = []
         if self.use_llm_api and self.client:
             try:
                 messages = self.build_messages(state, corrective_feedback)
@@ -178,10 +221,18 @@ class MCPClientAgent:
                     timeout=5.0
                 )
                 tool_calls = self._extract_tool_calls_from_llm(response)
-                if tool_calls:
-                    return tool_calls
             except Exception as e:
                 self.logger.debug(f"LLM API request failed ({e}). Switching to Dual-Mode Reasoning.")
                 
-        # Dual-Mode fallback execution
-        return self._dual_mode_heuristic_reasoning(state)
+        if not tool_calls:
+            tool_calls = self._dual_mode_heuristic_reasoning(state)
+            
+        # Record successful decisions into Semantic Memory
+        if self.memory and tool_calls:
+            for tc in tool_calls:
+                try:
+                    self.memory.store_memory(state, tc, tc.get("rationale", "Autonomous ECM decision executed."))
+                except Exception as mem_err:
+                    self.logger.debug(f"Memory storage skipped: {mem_err}")
+                    
+        return tool_calls
