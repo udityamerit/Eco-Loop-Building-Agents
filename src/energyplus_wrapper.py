@@ -24,12 +24,13 @@ class EnergyPlusSession:
       - Automatically engages a high-fidelity Python thermal physics engine
         when pyenergyplus is unavailable or offline.
     """
-    def __init__(self, idf_path: Path, epw_path: Path, output_dir: Path, mode_label: str = "ai_run"):
+    def __init__(self, idf_path: Path, epw_path: Path, output_dir: Path, mode_label: str = "ai_run", horizon_days: Optional[int] = None):
         self.idf_path = Path(idf_path)
         self.epw_path = Path(epw_path)
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.mode_label = mode_label
+        self.horizon_days = horizon_days or SIM_HORIZON_DAYS
         
         self.logger = logging.getLogger(f"EPSession_{mode_label}")
         
@@ -40,7 +41,7 @@ class EnergyPlusSession:
         
         # State variables for Dual-Mode standalone simulation
         self.sim_time_min = 0.0
-        self.max_sim_time_min = SIM_HORIZON_DAYS * 24 * 60.0
+        self.max_sim_time_min = self.horizon_days * 24 * 60.0
         self.is_running = False
         
         # Initial thermal state (Chicago summer morning)
@@ -233,7 +234,7 @@ class EnergyPlusSession:
 
     def start(self):
         """Starts the continuous simulation run across the target horizon."""
-        self.logger.info(f"Starting simulation run [{self.mode_label}] across {SIM_HORIZON_DAYS} days.")
+        self.logger.info(f"Starting simulation run [{self.mode_label}] across {self.horizon_days} days.")
         self.is_running = True
         
         if self.use_native and PYENERGYPLUS_AVAILABLE:

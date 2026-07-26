@@ -1,0 +1,15 @@
+[server]
+# Prevent Streamlit watcher from aggressively scanning deep site-packages like transformers/torchvision
+fileWatcherType = "poll"
+runOnSave = false
+headless = false
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+primaryColor = "#3b82f6"
+backgroundColor = "#0f172a"
+secondaryBackgroundColor = "#1e293b"
+textColor = "#f8fafc"
+font = "sans serif"

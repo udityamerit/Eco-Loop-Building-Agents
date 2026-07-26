@@ -17,8 +17,8 @@ class TestControlLoopAndValidation(unittest.TestCase):
     """
     @classmethod
     def setUpClass(cls):
-        cls.test_dir = BASE_DIR / "tests" / "tmp_test_output"
-        cls.test_dir.mkdir(parents=True, exist_ok=True)
+        import tempfile
+        cls.test_dir = Path(tempfile.mkdtemp())
         cls.idf_path = BASE_DIR / "models" / "baseline_building.idf"
         cls.epw_path = BASE_DIR / "models" / "baseline_weather.epw"
 

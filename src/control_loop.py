@@ -1,7 +1,7 @@
 import logging
 import time
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 from src.config import (
     IDF_PATH,
@@ -119,7 +119,7 @@ class ControlLoop:
                 
         self._last_control_time = sim_time
 
-def run_evaluation_pipeline():
+def run_evaluation_pipeline(horizon_days: Optional[int] = None):
     """
     Executes the complete comparative evaluation pipeline:
     1. Runs Baseline Simulation (untouched static schedule).
@@ -128,12 +128,12 @@ def run_evaluation_pipeline():
     """
     logger = logging.getLogger("PipelineRunner")
     logger.info("=====================================================================")
-    logger.info("STARTING ECO-LOOP BUILDING AGENTS EVALUATION PIPELINE")
+    logger.info(f"STARTING ECO-LOOP BUILDING AGENTS EVALUATION PIPELINE (Horizon: {horizon_days or SIM_HORIZON_DAYS} Days)")
     logger.info("=====================================================================")
     
     # --- PHASE 1: BASELINE RUN ---
     logger.info(">>> Launching Phase 1: Baseline Building Simulation (Untouched Schedule) <<<")
-    baseline_session = EnergyPlusSession(IDF_PATH, EPW_PATH, BASELINE_LOGS_DIR, mode_label="baseline_run")
+    baseline_session = EnergyPlusSession(IDF_PATH, EPW_PATH, BASELINE_LOGS_DIR, mode_label="baseline_run", horizon_days=horizon_days)
     baseline_logger = MetricsLogger(BASELINE_LOGS_DIR)
     baseline_ecm = ECMLogic()
     baseline_server = MCPServer(baseline_session, baseline_ecm)
@@ -156,7 +156,7 @@ def run_evaluation_pipeline():
     
     # --- PHASE 2: AI-DRIVEN CLOSED-LOOP RUN ---
     logger.info(">>> Launching Phase 2: AI-Driven Closed-Loop Autonomous Simulation <<<")
-    ai_session = EnergyPlusSession(IDF_PATH, EPW_PATH, AI_LOGS_DIR, mode_label="ai_run")
+    ai_session = EnergyPlusSession(IDF_PATH, EPW_PATH, AI_LOGS_DIR, mode_label="ai_run", horizon_days=horizon_days)
     ai_logger = MetricsLogger(AI_LOGS_DIR)
     ai_ecm = ECMLogic()
     ai_server = MCPServer(ai_session, ai_ecm)

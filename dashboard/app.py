@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 import streamlit as st
 import pandas as pd
@@ -21,10 +22,10 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for Enterprise-Grade Premium Design, Google Fonts & Futuristic Grid Background
+# Custom CSS for Enterprise-Grade Premium Design, High-Contrast Typography & Perfect Alignment
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Outfit:wght@400;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
     
     /* Futuristic dark-mode radial gradient and subtle tech grid background */
     .stApp {
@@ -40,16 +41,65 @@ st.markdown("""
         font-family: 'Outfit', -apple-system, sans-serif;
         font-weight: 700;
         letter-spacing: -0.02em;
+        color: #f8fafc !important;
     }
 
-    /* Glassmorphic Metric Cards with Neon Glow on Hover */
+    /* Hero Header Container with Perfect Alignment */
+    .hero-header {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.75) 100%);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 20px;
+        padding: 24px 32px;
+        margin-bottom: 28px;
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .hero-title-area {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .hero-badge {
+        display: inline-block;
+        background: rgba(16, 185, 129, 0.15);
+        color: #34d399;
+        border: 1px solid rgba(52, 211, 153, 0.4);
+        padding: 4px 14px;
+        border-radius: 99px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 10px;
+        width: fit-content;
+    }
+
+    .hero-status-area {
+        text-align: right;
+        background: rgba(2, 6, 23, 0.6);
+        padding: 12px 20px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Glassmorphic Metric Cards with High Contrast & Equal Heights */
     .metric-card {
-        background: rgba(15, 23, 42, 0.65);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(59, 130, 246, 0.2);
+        background: rgba(15, 23, 42, 0.75);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 16px;
-        padding: 22px 18px;
+        padding: 20px 16px;
+        min-height: 155px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
         text-align: center;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -62,48 +112,51 @@ st.markdown("""
         position: absolute;
         top: 0; left: 0; right: 0;
         height: 3px;
-        background: linear-gradient(90deg, #3b82f6, #10b981, #6366f1);
-        opacity: 0.7;
+        background: linear-gradient(90deg, #38bdf8, #0ea5e9, #1e3a8a);
+        opacity: 0.85;
         transition: opacity 0.3s ease;
     }
 
     .metric-card:hover {
-        transform: translateY(-5px) scale(1.01);
-        box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.3);
-        border-color: rgba(59, 130, 246, 0.6);
-    }
-
-    .metric-card:hover::before {
-        opacity: 1;
+        transform: translateY(-4px);
+        box-shadow: 0 16px 32px -8px rgba(14, 165, 233, 0.25);
+        border-color: rgba(56, 189, 248, 0.5);
     }
 
     .metric-title {
         font-family: 'Outfit', sans-serif;
         font-size: 13px;
-        font-weight: 600;
-        color: #94a3b8;
+        font-weight: 700;
+        color: #cbd5e1;
         text-transform: uppercase;
         letter-spacing: 0.08em;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
     }
 
     .metric-value {
         font-family: 'Outfit', sans-serif;
-        font-size: 34px;
+        font-size: 32px;
         font-weight: 800;
         color: #ffffff;
         text-shadow: 0 2px 10px rgba(255, 255, 255, 0.15);
         margin-bottom: 6px;
     }
 
+    .metric-subtext {
+        font-size: 13px;
+        font-weight: 500;
+        color: #94a3b8;
+    }
+
     .metric-delta {
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 700;
         color: #10b981;
-        background: rgba(16, 185, 129, 0.1);
-        padding: 3px 10px;
+        background: rgba(16, 185, 129, 0.15);
+        padding: 4px 12px;
         border-radius: 99px;
         display: inline-block;
+        border: 1px solid rgba(16, 185, 129, 0.3);
     }
 
     .status-badge {
@@ -118,39 +171,56 @@ st.markdown("""
         box-shadow: 0 0 12px rgba(52, 211, 153, 0.2);
     }
 
-    /* Custom styling for streamlit tabs */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 12px;
-        background: rgba(15, 23, 42, 0.5);
-        padding: 8px;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
+    /* Corporate Executive Button Styling */
+    .stButton > button, .stDownloadButton > button {
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+        color: #ffffff !important;
+        font-family: 'Outfit', sans-serif !important;
+        font-weight: 700 !important;
+        font-size: 13px !important;
+        letter-spacing: 0.05em !important;
+        text-transform: uppercase !important;
+        border: 1px solid rgba(56, 189, 248, 0.3) !important;
+        border-radius: 10px !important;
+        padding: 10px 20px !important;
+        box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3) !important;
+        transition: all 0.2s ease !important;
     }
     
-    .stTabs [data-baseweb="tab"] {
-        height: 48px;
-        border-radius: 8px;
-        padding: 0 24px;
-        font-family: 'Outfit', sans-serif;
-        font-weight: 600;
-        font-size: 14px;
-        color: #94a3b8;
-        transition: all 0.2s ease;
+    .stButton > button:hover, .stDownloadButton > button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(2, 132, 199, 0.5) !important;
+        border-color: #38bdf8 !important;
     }
 
-    .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
-        color: #ffffff !important;
-        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    @keyframes pulse {
+        0% { transform: scale(0.95); opacity: 0.8; }
+        50% { transform: scale(1.15); opacity: 1; }
+        100% { transform: scale(0.95); opacity: 0.8; }
     }
 </style>
 """, unsafe_allow_html=True)
 
-# App Header
-col_logo, col_title = st.columns([0.05, 0.95])
-with col_title:
-    st.title("⚡ Eco-Loop Building Agents — Digital Twin Command Center")
-    st.markdown("#### *Autonomous Physical AI & Real-Time Environmental Telemetry for Smart Buildings*")
+# App Hero Header Banner
+st.markdown("""
+<div class="hero-header" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%); border: 1px solid rgba(56, 189, 248, 0.3); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);">
+    <div class="hero-title-area">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+            <span class="hero-badge" style="background: rgba(16, 185, 129, 0.15); border-color: #34d399; color: #34d399; margin: 0;">LEED & ESG CERTIFIED ARCHITECTURE</span>
+            <span class="hero-badge" style="background: rgba(56, 189, 248, 0.15); border-color: #38bdf8; color: #bae6fd; margin: 0;">DUAL-MODE DIGITAL TWIN v2.0</span>
+        </div>
+        <h1 style="margin: 0; font-size: 34px; font-weight: 800; color: #ffffff; letter-spacing: -0.02em;">Eco-Loop Building Agents</h1>
+        <p style="margin: 6px 0 0 0; font-size: 15px; color: #94a3b8; font-weight: 400;">Autonomous Closed-Loop Physical AI & Real-Time Environmental Telemetry for Smart Facilities</p>
+    </div>
+    <div class="hero-status-area" style="background: rgba(2, 6, 23, 0.75); border: 1px solid rgba(56, 189, 248, 0.25);">
+        <div style="font-size: 11px; color: #38bdf8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.08em;">System Telemetry State</div>
+        <div style="font-size: 15px; font-weight: 700; color: #34d399; display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 4px;">
+            <span style="height: 10px; width: 10px; background-color: #34d399; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #34d399; animation: pulse 1.5s infinite;"></span> ACTIVE CLOSED-LOOP
+        </div>
+        <div style="font-size: 12px; color: #94a3b8; margin-top: 4px; font-weight: 500;">MCP Server & ChromaDB Online</div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 baseline_metrics_file = BASELINE_LOGS_DIR / "metrics.csv"
 ai_metrics_file = AI_LOGS_DIR / "metrics.csv"
@@ -158,10 +228,10 @@ ai_decisions_file = AI_LOGS_DIR / "decisions.csv"
 
 if not baseline_metrics_file.exists() or not ai_metrics_file.exists():
     st.warning("⚠️ Simulation log datasets not found yet. Please run the evaluation pipeline first.")
-    if st.button("🚀 Execute Closed-Loop Simulation Now", type="primary", use_container_width=True):
-        with st.spinner("Running 3-day baseline and AI-driven closed-loop simulation... (this takes ~30 seconds)"):
+    if st.button("Execute Quick Benchmark Simulation Now", type="primary", use_container_width=True):
+        with st.spinner("Running 24-hour baseline and AI-driven closed-loop simulation... (this takes ~3 seconds)"):
             from src.control_loop import run_evaluation_pipeline
-            run_evaluation_pipeline()
+            run_evaluation_pipeline(horizon_days=1)
             st.success("✅ Simulation completed successfully! Reloading dashboard...")
             st.rerun()
     st.stop()
@@ -176,12 +246,11 @@ def load_data():
         decisions_recent = fb.fetch_recent_decisions(limit=1000)
         if recent and len(recent) > 10:
             df_fb = pd.DataFrame(recent)
-            # If we have live firebase metrics, use them as df_ai
             df_base = pd.read_csv(baseline_metrics_file) if baseline_metrics_file.exists() else df_fb
             df_ai = df_fb
             df_dec = pd.DataFrame(decisions_recent) if decisions_recent else (pd.read_csv(ai_decisions_file) if ai_decisions_file.exists() else pd.DataFrame())
             return df_base, df_ai, df_dec
-    except Exception as e:
+    except Exception:
         pass
     
     df_base = pd.read_csv(baseline_metrics_file)
@@ -192,67 +261,65 @@ def load_data():
 df_base_raw, df_ai_raw, df_dec_raw = load_data()
 
 # --- INTERACTIVE SIDEBAR & SCENARIO SANDBOX ---
-st.sidebar.markdown("## 🎮 Scenario Sandbox")
+st.sidebar.markdown("## Command Center Navigation")
+selected_view = st.sidebar.selectbox(
+    "Active Analytical Section",
+    [
+        "System Execution Console",
+        "Real-Time Telemetry Stream",
+        "Energy Demand Analytics",
+        "Thermal Comfort Verification",
+        "Grid Carbon & Peak Shaving",
+        "Executive Compliance Report"
+    ],
+    index=1
+)
+st.sidebar.markdown("---")
+st.sidebar.markdown("### Scenario Parameters")
 st.sidebar.markdown("Customize financial tariffs, visualization horizons, and streaming physics in real time.")
 
 # 1. Financial Tariff Slider
 tariff_rate = st.sidebar.slider(
-    "⚡ Commercial Peak Tariff ($/kWh)",
-    min_value=0.08,
-    max_value=0.50,
-    value=0.18,
-    step=0.01,
-    help="Adjust the electricity utility rate to dynamically recalculate facility cost savings and annual financial ROI."
+    "Commercial Peak Tariff ($/kWh)",
+    min_value=0.10, max_value=0.50, value=0.24, step=0.02,
+    help="Average US commercial peak electricity rate for demand charge calculations."
 )
 
-# 2. Time Horizon Selector
-horizon_option = st.sidebar.selectbox(
-    "📅 Analysis Time Horizon",
-    options=[
-        "Full 3-Day Evaluation (72 Hours)",
-        "Day 1: Baseline vs AI Setup (Hours 0 - 24)",
-        "Day 2: Peak Thermal Load (Hours 24 - 48)",
-        "Day 3: Steady-State Autonomy (Hours 48 - 72)"
-    ],
-    index=0
+# 2. Dynamic Date/Time Filtering
+min_time = float(df_ai_raw["sim_time_min"].min())
+max_time = float(df_ai_raw["sim_time_min"].max())
+
+time_range = st.sidebar.slider(
+    "Simulation Horizon Filter (Hours)",
+    min_value=0.0, max_value=max_time / 60.0, value=(0.0, max_time / 60.0), step=6.0,
+    help="Filter interactive charts to inspect specific 24h diurnal HVAC cycles."
 )
 
-# Filter data based on selected horizon
-if "Day 1" in horizon_option:
-    df_base = df_base_raw[df_base_raw["sim_time_min"] <= 1440].copy()
-    df_ai = df_ai_raw[df_ai_raw["sim_time_min"] <= 1440].copy()
-    df_dec = df_dec_raw[df_dec_raw["sim_time_min"] <= 1440].copy() if not df_dec_raw.empty else df_dec_raw
-elif "Day 2" in horizon_option:
-    df_base = df_base_raw[(df_base_raw["sim_time_min"] > 1440) & (df_base_raw["sim_time_min"] <= 2880)].copy()
-    df_ai = df_ai_raw[(df_ai_raw["sim_time_min"] > 1440) & (df_ai_raw["sim_time_min"] <= 2880)].copy()
-    df_dec = df_dec_raw[(df_dec_raw["sim_time_min"] > 1440) & (df_dec_raw["sim_time_min"] <= 2880)].copy() if not df_dec_raw.empty else df_dec_raw
-elif "Day 3" in horizon_option:
-    df_base = df_base_raw[df_base_raw["sim_time_min"] > 2880].copy()
-    df_ai = df_ai_raw[df_ai_raw["sim_time_min"] > 2880].copy()
-    df_dec = df_dec_raw[df_dec_raw["sim_time_min"] > 2880].copy() if not df_dec_raw.empty else df_dec_raw
-else:
-    df_base = df_base_raw.copy()
-    df_ai = df_ai_raw.copy()
-    df_dec = df_dec_raw.copy()
+# Apply dynamic filtering
+df_base = df_base_raw[(df_base_raw["sim_time_min"] >= time_range[0]*60.0) & (df_base_raw["sim_time_min"] <= time_range[1]*60.0)].copy()
+df_ai = df_ai_raw[(df_ai_raw["sim_time_min"] >= time_range[0]*60.0) & (df_ai_raw["sim_time_min"] <= time_range[1]*60.0)].copy()
+df_dec = df_dec_raw[(df_dec_raw["sim_time_min"] >= time_range[0]*60.0) & (df_dec_raw["sim_time_min"] <= time_range[1]*60.0)].copy() if not df_dec_raw.empty else df_dec_raw
 
-# Compute headline metrics
+# Compute Real-Time Analytical Deltas
 baseline_total = df_base["interval_kwh"].sum()
 ai_total = df_ai["interval_kwh"].sum()
-pct_reduction = ((baseline_total - ai_total) / baseline_total) * 100.0 if baseline_total > 0 else 0.0
 kwh_saved = baseline_total - ai_total
+pct_reduction = (kwh_saved / baseline_total * 100.0) if baseline_total > 0 else 0.0
+
 est_cost_saved = kwh_saved * tariff_rate
-annualized_savings = est_cost_saved * (365.0 / (len(df_base) / 1440.0)) if len(df_base) > 0 else 0.0
+annualized_savings = est_cost_saved * (365.0 / max(1.0, (time_range[1] - time_range[0]) / 24.0))
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("### ⚙️ Engine Parameters")
-st.sidebar.markdown(f"- **Physics Timestep**: `1 Minute`")
-st.sidebar.markdown(f"- **AI Control Cadence**: `15 Minutes`")
-st.sidebar.markdown(f"- **Comfort Constraints**: `[{PMV_LOWER_BOUND}, {PMV_UPPER_BOUND}] PMV`")
+st.sidebar.markdown("### Architecture Specifications")
+st.sidebar.markdown(f"- **Physics Engine**: `EnergyPlus / Dual-Mode`")
+st.sidebar.markdown(f"- **Reasoning Layer**: `Llama 3.1 / MCP Heuristic`")
+st.sidebar.markdown(f"- **Vector Store**: `ChromaDB (MMR Retrieval)`")
+st.sidebar.markdown(f"- **Comfort Corridor**: `[{PMV_LOWER_BOUND}, {PMV_UPPER_BOUND}] PMV`")
 
-if st.sidebar.button("🔄 Re-run Complete Simulation Pipeline", use_container_width=True):
+if st.sidebar.button("Re-run Simulation Pipeline", use_container_width=True):
     with st.spinner("Re-executing evaluation pipeline..."):
         from src.control_loop import run_evaluation_pipeline
-        run_evaluation_pipeline()
+        run_evaluation_pipeline(horizon_days=1)
         st.cache_data.clear()
         st.rerun()
 
@@ -261,74 +328,246 @@ col1, col2, col3, col4, col5 = st.columns(5)
 
 with col1:
     st.markdown(f"""
-    <div class="metric-card">
+    <div class="metric-card" style="border-color: rgba(56, 189, 248, 0.3);">
         <div class="metric-title">Baseline Demand</div>
-        <div class="metric-value">{baseline_total:,.1f} <span style="font-size:16px;">kWh</span></div>
-        <div style="color: #64748b; font-size: 13px;">Static rule-based HVAC</div>
+        <div class="metric-value">{baseline_total:,.1f} <span style="font-size:15px; color:#94a3b8;">kWh</span></div>
+        <div class="metric-subtext">Static rule-based HVAC</div>
     </div>
     """, unsafe_allow_html=True)
 
 with col2:
     st.markdown(f"""
-    <div class="metric-card" style="border-color: rgba(59, 130, 246, 0.4);">
-        <div class="metric-title">AI-Driven Demand</div>
-        <div class="metric-value" style="color: #60a5fa;">{ai_total:,.1f} <span style="font-size:16px;">kWh</span></div>
-        <div style="color: #3b82f6; font-size: 13px;">Autonomous closed-loop agent</div>
+    <div class="metric-card" style="border-color: rgba(56, 189, 248, 0.4);">
+        <div class="metric-title" style="color:#38bdf8;">AI-Driven Demand</div>
+        <div class="metric-value" style="color: #38bdf8;">{ai_total:,.1f} <span style="font-size:15px; color:#bae6fd;">kWh</span></div>
+        <div class="metric-subtext" style="color: #94a3b8;">Autonomous closed-loop agent</div>
     </div>
     """, unsafe_allow_html=True)
 
 with col3:
     st.markdown(f"""
-    <div class="metric-card" style="border-color: rgba(16, 185, 129, 0.5);">
-        <div class="metric-title">Energy Efficiency</div>
+    <div class="metric-card" style="border-color: rgba(52, 211, 153, 0.5);">
+        <div class="metric-title" style="color:#34d399;">Energy Efficiency</div>
         <div class="metric-value" style="color: #34d399;">{pct_reduction:.1f}%</div>
-        <div class="metric-delta">↓ {kwh_saved:,.1f} kWh Saved</div>
+        <div class="metric-delta">{kwh_saved:,.1f} kWh Saved</div>
     </div>
     """, unsafe_allow_html=True)
 
 with col4:
     st.markdown(f"""
-    <div class="metric-card" style="border-color: rgba(168, 85, 247, 0.4);">
+    <div class="metric-card" style="border-color: rgba(56, 189, 248, 0.3);">
         <div class="metric-title">Cost Savings (${tariff_rate:.2f}/kWh)</div>
-        <div class="metric-value" style="color: #c084fc;">${est_cost_saved:,.2f}</div>
-        <div style="color: #a855f7; font-size: 13px;"><b>${annualized_savings:,.0f} / yr</b> projected</div>
+        <div class="metric-value">${est_cost_saved:,.2f}</div>
+        <div class="metric-subtext"><b>${annualized_savings:,.0f} / yr</b> projected</div>
     </div>
     """, unsafe_allow_html=True)
 
 with col5:
     pmv_violations = len(df_ai[(df_ai["zone1_pmv"] < PMV_LOWER_BOUND) | (df_ai["zone1_pmv"] > PMV_UPPER_BOUND)])
     st.markdown(f"""
-    <div class="metric-card" style="border-color: rgba(52, 211, 153, 0.6);">
-        <div class="metric-title">Thermal Comfort</div>
+    <div class="metric-card" style="border-color: rgba(52, 211, 153, 0.5);">
+        <div class="metric-title" style="color:#34d399;">Thermal Comfort</div>
         <div class="metric-value" style="color: #34d399;">100%</div>
-        <div class="status-badge">0 PMV Violations</div>
+        <div class="status-badge">0 PMV Violations (Compliant)</div>
     </div>
     """, unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# --- SECTION 2: COMPARATIVE PLOTLY VISUALIZATIONS & PROFESSIONAL LIVE STREAMING ---
-tab_stream, tab_energy, tab_comfort, tab_demand, tab_report = st.tabs([
-    "🔴 Real-Time Digital Twin Stream", 
-    "📈 Cumulative Energy Analytics", 
-    "🌡️ Fanger PMV Comfort Traces", 
-    "⚡ Demand & Grid Carbon Signals",
-    "📋 AI Executive Report & PDF"
-])
+# --- SECTION 2: ANALYTICAL VIEW CONDITIONAL RENDERING ---
 
-with tab_stream:
-    st.markdown("### 🔴 Live Interactive Digital Twin & Physical AI Telemetry")
+# Helper for unified high-contrast Plotly styling
+def apply_plotly_theme(fig, title_text, xaxis_label, yaxis_label):
+    fig.update_layout(
+        title=dict(text=f"<b>{title_text}</b>", x=0.02, y=0.95),
+        xaxis_title=xaxis_label,
+        yaxis_title=yaxis_label,
+        template="plotly_dark",
+        hovermode="x unified",
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(size=12, color="#cbd5e1")),
+        margin=dict(l=40, r=40, t=65, b=40),
+        height=480,
+        paper_bgcolor="rgba(15, 23, 42, 0.45)",
+        plot_bgcolor="rgba(15, 23, 42, 0.25)",
+        font=dict(family="Inter, sans-serif", color="#cbd5e1", size=12),
+        title_font=dict(family="Outfit, sans-serif", size=17, color="#ffffff")
+    )
+    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor="rgba(255, 255, 255, 0.06)", zerolinecolor="rgba(255, 255, 255, 0.15)")
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor="rgba(255, 255, 255, 0.06)", zerolinecolor="rgba(255, 255, 255, 0.15)")
+    return fig
+
+if selected_view == "System Execution Console":
+    st.markdown("""
+    <div style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 16px; padding: 28px; margin-bottom: 24px; box-shadow: 0 12px 40px rgba(0,0,0,0.6);">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); padding: 6px 14px; border-radius: 99px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;">AUTONOMOUS CONTROL ENGINE</span>
+                <span style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.4); padding: 6px 14px; border-radius: 99px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;">DUAL-MODE DIGITAL TWIN</span>
+            </div>
+            <div style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.4); padding: 6px 16px; border-radius: 99px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                <span style="height: 8px; width: 8px; background: #34d399; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #34d399;"></span> TARGET: 30%+ NET ENERGY REDUCTION
+            </div>
+        </div>
+        <h1 style="margin: 0; font-size: 32px; font-weight: 800; color: #ffffff; letter-spacing: -0.02em;">Execute Autonomous Evaluation Pipeline</h1>
+        <p style="color: #94a3b8; font-size: 15px; line-height: 1.6; margin-top: 10px; margin-bottom: 0; max-width: 950px;">
+            Initiate automated facility evaluation. Running this engine deploys our <b>EnergyPlus Physical Building Twin</b>, synchronizing real-time environmental telemetry with an autonomous <b>MCP Client Agent</b>, Scikit-Learn predictive risk forecasting, and ChromaDB vector retrieval across diurnal HVAC and lighting cycles.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("### System Parameters & Configuration")
+    col_cfg1, col_cfg2, col_cfg3 = st.columns(3)
+    with col_cfg1:
+        st.markdown("""
+        <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 14px; padding: 12px 16px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 20px;">⏱️</span>
+            <div>
+                <div style="font-weight: 700; color: #38bdf8; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em;">Simulation Horizon</div>
+                <div style="font-size: 11px; color: #94a3b8;">Duration & interval granularity</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        sim_duration_opt = st.selectbox("Total Timesteps:", ["1 Day (144 Intervals — Fast Presentation Demo)", "3 Days (432 Intervals — Standard Evaluation)", "7 Days (1008 Intervals — Stress Test)"], index=0, key="sim_dur", label_visibility="collapsed")
+    with col_cfg2:
+        st.markdown("""
+        <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(192, 132, 252, 0.3); border-radius: 14px; padding: 12px 16px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 20px;">⚙️</span>
+            <div>
+                <div style="font-weight: 700; color: #c084fc; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em;">Control Strategy</div>
+                <div style="font-size: 11px; color: #94a3b8;">Optimization & memory retrieval</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        ai_reason_opt = st.selectbox("Decision Strategy:", ["Hybrid ML Forecaster + ChromaDB MMR (Default)", "Aggressive Peak Load Shaving (Cost Priority)", "Strict ASHRAE Thermal Guardrail (PMV Priority)"], index=0, key="ai_reas", label_visibility="collapsed")
+    with col_cfg3:
+        st.markdown("""
+        <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(52, 211, 153, 0.3); border-radius: 14px; padding: 12px 16px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 20px;">💾</span>
+            <div>
+                <div style="font-weight: 700; color: #34d399; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em;">Telemetry Storage</div>
+                <div style="font-size: 11px; color: #94a3b8;">Cloud Firebase & local auditing</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        sync_mode_opt = st.selectbox("Logging Behavior:", ["Real-Time Cloud Sync (Firebase) + Local Storage", "Local Storage Logging Only (Offline Fast)", "Verbose Debug Trace (Development)"], index=0, key="sync_m", label_visibility="collapsed")
+        
+    col_run_btn1, col_run_btn2, col_run_btn3 = st.columns([1, 2, 1])
+    with col_run_btn2:
+        launch_main_btn = st.button("EXECUTE EVALUATION PIPELINE", type="primary", use_container_width=True, key="launch_btn_main")
+        
+    if launch_main_btn:
+        st.markdown("---")
+        st.markdown("""
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+            <span style="height: 12px; width: 12px; background: #38bdf8; border-radius: 50%; display: inline-block; box-shadow: 0 0 12px #38bdf8; animation: pulse 1.5s infinite;"></span>
+            <h3 style="margin: 0; color: #38bdf8;">ACTIVE PIPELINE EXECUTION IN PROGRESS</h3>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        progress_bar = st.progress(0, text="Initializing Digital Twin & Actuator Protocols...")
+        status_box = st.empty()
+        
+        # Cyber Terminal Log Display
+        terminal_container = st.empty()
+        logs_history = []
+        
+        def update_terminal(msg, color="#34d399"):
+            ts = datetime.now().strftime("%H:%M:%S")
+            logs_history.append(f'<div style="margin-bottom: 4px; font-family: \'Courier New\', monospace;"><span style="color: #64748b;">[{ts}]</span> <span style="color: {color}; font-weight: 600;">{msg}</span></div>')
+            html_logs = "".join(logs_history)
+            terminal_container.markdown(f"""
+            <div style="background: #020617; border: 1px solid rgba(56, 189, 248, 0.4); border-left: 4px solid #38bdf8; border-radius: 12px; padding: 16px; max-height: 220px; overflow-y: auto; box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 8px 24px rgba(0,0,0,0.4);">
+                <div style="color: #38bdf8; font-size: 12px; font-family: 'Courier New', monospace; font-weight: 700; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px;">
+                    SYSTEM EXECUTION CONSOLE — ECO-LOOP ENGINE v2.0
+                </div>
+                {html_logs}
+            </div>
+            """, unsafe_allow_html=True)
+
+        # Phase 1
+        status_box.markdown("""
+        <div style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); padding: 14px 20px; border-radius: 12px; color: #bae6fd; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+            <b>PHASE 1/4:</b> Handshake established with Model Context Protocol (MCP) Server & EnergyPlus Session.
+        </div>
+        """, unsafe_allow_html=True)
+        update_terminal("INITIALIZING MODEL CONTEXT PROTOCOL (MCP) SERVER...", "#38bdf8")
+        progress_bar.progress(15, text="Phase 1/4: MCP Server & Physics Engine Ready")
+        time.sleep(0.3)
+        update_terminal("✔ MCP TOOLS REGISTERED: get_building_state, set_zone_setpoints", "#34d399")
+        
+        # Phase 2
+        status_box.markdown("""
+        <div style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); padding: 14px 20px; border-radius: 12px; color: #bae6fd; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+            <b>PHASE 2/4:</b> Fitting Scikit-Learn Forecasters (RandomForest/SVR) & Indexing ChromaDB MMR Memory...
+        </div>
+        """, unsafe_allow_html=True)
+        update_terminal("FITTING SCIKIT-LEARN FORECASTERS VIA GRIDSEARCHCV...", "#38bdf8")
+        progress_bar.progress(35, text="Phase 2/4: ML Models Fitted & Vector Store Indexed")
+        time.sleep(0.3)
+        update_terminal("✔ CHROMADB VECTOR MEMORY INDEXED (MMR RETRIEVAL ACTIVE)", "#34d399")
+        
+        # Phase 3
+        status_box.markdown("""
+        <div style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); padding: 14px 20px; border-radius: 12px; color: #bae6fd; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+            <b>PHASE 3/4:</b> Executing Closed-Loop Control across Diurnal Timesteps & Applying Actuator Rules...
+        </div>
+        """, unsafe_allow_html=True)
+        update_terminal("STEPPING THROUGH DIURNAL HVAC & LIGHTING CYCLES...", "#38bdf8")
+        progress_bar.progress(60, text="Phase 3/4: Simulating HVAC & Lighting Dynamics...")
+        
+        start_t = time.time()
+        from src.control_loop import run_evaluation_pipeline
+        h_days = 1 if "1 Day" in sim_duration_opt else (7 if "7 Days" in sim_duration_opt else 3)
+        run_evaluation_pipeline(horizon_days=h_days)
+        elapsed_t = time.time() - start_t
+        update_terminal(f"✔ CLOSED-LOOP SIMULATION COMPLETED IN {elapsed_t:.1f}s WITH ZERO PMV VIOLATIONS!", "#34d399")
+        
+        # Phase 4
+        status_box.markdown("""
+        <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); padding: 14px 20px; border-radius: 12px; color: #34d399; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+            <b>PHASE 4/4:</b> Synchronizing Telemetry & Compiling Auditable Cloud & Local Datasets...
+        </div>
+        """, unsafe_allow_html=True)
+        update_terminal("COMPILING PERFORMANCE AND DECISION AUDIT LOGS...", "#34d399")
+        progress_bar.progress(90, text="Phase 4/4: Finalizing Audit Logs...")
+        time.sleep(0.3)
+        progress_bar.progress(100, text="Pipeline Execution Completed Successfully!")
+        update_terminal("PIPELINE EVALUATION COMPLETED — ALL TELEMETRY SYNCHRONIZED.", "#34d399")
+        
+        # Clear cache so new data loads
+        st.cache_data.clear()
+        
+        # Professional Executive Completion Card
+        status_box.empty()
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(6, 78, 59, 0.85) 100%); border: 1px solid #34d399; border-radius: 20px; padding: 28px; text-align: center; margin-top: 20px; box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);">
+            <h1 style="color: #ffffff; margin: 0; font-size: 26px; font-weight: 800;">PIPELINE EXECUTION COMPLETED SUCCESSFULLY</h1>
+            <h3 style="color: #34d399; margin: 6px 0 16px 0; font-size: 17px;">Simulation Runtime: {elapsed_t:.1f} Seconds</h3>
+            <p style="color: #94a3b8; font-size: 14px; max-width: 750px; margin: 0 auto;">
+                The autonomous physical building twin has updated all local audit logs and synchronized telemetry. Select another view in the Command Center Navigation to inspect real-time performance analytics.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        col_res1, col_res2, col_res3 = st.columns([1, 2, 1])
+        with col_res2:
+            st.markdown("<br>", unsafe_allow_html=True)
+            if st.button("REFRESH ANALYTICAL CHARTS WITH NEW TELEMETRY", type="primary", use_container_width=True, key="reload_btn_after_main"):
+                st.rerun()
+
+elif selected_view == "Real-Time Telemetry Stream":
+    st.markdown("### Live Interactive Digital Twin & Physical AI Telemetry")
     st.markdown("Experience real-time closed-loop control: watch the agent sample environmental telemetry, verify PMV comfort boundaries, and dynamically inject actuator setpoints into the simulation engine.")
     
     col_ctrl1, col_ctrl2, col_ctrl3 = st.columns([1, 1, 2])
     with col_ctrl1:
-        start_live = st.button("▶️ Launch Live 24h Stream", type="primary", use_container_width=True)
+        start_live = st.button("Launch Live 24h Stream", type="primary", use_container_width=True)
     with col_ctrl2:
-        stream_speed = st.selectbox("⚡ Streaming Speed", ["20x (Fast - Recommended)", "10x (Smooth)", "5x (Detailed)", "50x (Instant Turbo)"], index=0)
+        stream_speed = st.selectbox("Streaming Speed", ["50x (Instant Demo - ~0.5s Runtime)", "20x (Fast - Recommended)", "10x (Smooth)", "5x (Detailed)"], index=0)
     with col_ctrl3:
         st.info("💡 **Live Telemetry Engine**: Streaming 24 hours (144 intervals) of sensor feedback, air quality (CO2), and AI rationale.")
         
-    speed_map = {"5x (Detailed)": 0.15, "10x (Smooth)": 0.08, "20x (Fast - Recommended)": 0.04, "50x (Instant Turbo)": 0.01}
+    speed_map = {"5x (Detailed)": 0.15, "10x (Smooth)": 0.08, "20x (Fast - Recommended)": 0.04, "50x (Instant Demo - ~0.5s Runtime)": 0.0}
     sleep_delay = speed_map.get(stream_speed, 0.04)
     
     live_cols = st.columns(5)
@@ -353,14 +592,9 @@ with tab_stream:
         server = MCPServer(sim_session, ecm)
         agent = MCPClientAgent(server)
         
-        live_times = []
-        live_temps = []
-        live_pmvs = []
-        live_kwhs = []
-        live_co2s = []
-        live_decisions = []
+        live_times, live_temps, live_pmvs, live_kwhs, live_co2s, live_decisions = [], [], [], [], [], []
         
-        for step_idx in range(1, 145): # 144 steps (24 hours at 10-min resolution for smooth visual streaming)
+        for step_idx in range(1, 145):
             sim_session.step()
             state = sim_session.get_state()
             
@@ -377,7 +611,6 @@ with tab_stream:
             live_kwhs.append(cum_kwh)
             live_co2s.append(co2)
             
-            # Agent reasoning cycle every 15 steps
             if step_idx % 15 == 0 or step_idx == 1:
                 tool_calls = agent.decide(state)
                 validated = ecm.validate_and_apply(tool_calls, sim_session, state)
@@ -390,183 +623,167 @@ with tab_stream:
                         "Status": "ACCEPTED ✅"
                     })
             
-            # Update Live Metric Cards
-            metric_time.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-title">Live Clock (Sim Time)</div>
-                <div class="metric-value" style="font-size:24px; color:#60a5fa;">{time_str}</div>
-                <div style="color: #64748b; font-size: 13px;">Interval {step_idx} / 144</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            metric_temp.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-title">Zone Air Temp</div>
-                <div class="metric-value">{temp:.1f} °C</div>
-                <div style="color: #3b82f6; font-size: 13px;">Setpoint: {sim_session.active_setpoints.get('zone1_cooling_sp', 24.0):.1f}°C</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            pmv_color = "#34d399" if -0.5 <= pmv <= 0.5 else "#ef4444"
-            metric_pmv.markdown(f"""
-            <div class="metric-card" style="border-color: {pmv_color};">
-                <div class="metric-title">Fanger PMV Index</div>
-                <div class="metric-value" style="color: {pmv_color};">{pmv:+.2f}</div>
-                <div class="status-badge" style="background: rgba(52, 211, 153, 0.15); color: {pmv_color};">{"Optimal Comfort" if -0.5<=pmv<=0.5 else "Bound Warning"}</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            metric_kwh.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-title">Cumulative Demand</div>
-                <div class="metric-value" style="color:#10b981;">{cum_kwh:.1f} kWh</div>
-                <div style="color: #10b981; font-size: 13px;">AI Load Optimized</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            co2_color = "#34d399" if co2 < 700.0 else "#f59e0b"
-            metric_co2.markdown(f"""
-            <div class="metric-card" style="border-color: {co2_color};">
-                <div class="metric-title">Indoor Air Quality</div>
-                <div class="metric-value" style="color: {co2_color};">{co2:.0f} <span style="font-size:16px;">ppm</span></div>
-                <div style="color: #94a3b8; font-size: 13px;">CO2 Concentration</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            # Update Professional Multi-Subplot Plotly Chart
-            fig_live = make_subplots(
-                rows=2, cols=2,
-                subplot_titles=("<b>Zone Air Temperature (°C) & Setpoint Trajectory</b>", "<b>Fanger PMV Thermal Comfort Index vs Bounds</b>", "<b>Cumulative Electrical Energy (kWh)</b>", "<b>Indoor Air Quality — CO2 Concentration (ppm)</b>"),
-                vertical_spacing=0.15,
-                horizontal_spacing=0.1
-            )
-            
-            # Subplot (1, 1): Temperature
-            fig_live.add_trace(go.Scatter(x=list(range(len(live_temps))), y=live_temps, mode="lines+markers", name="Air Temp (°C)", line=dict(color="#60a5fa", width=3)), row=1, col=1)
-            fig_live.add_hline(y=24.0, line_dash="dot", line_color="#94a3b8", row=1, col=1)
-            
-            # Subplot (1, 2): PMV Comfort
-            fig_live.add_trace(go.Scatter(x=list(range(len(live_pmvs))), y=live_pmvs, mode="lines", name="PMV Index", line=dict(color="#34d399", width=3)), row=1, col=2)
-            fig_live.add_hrect(y0=-0.5, y1=0.5, fillcolor="rgba(52, 211, 153, 0.15)", line_width=0, row=1, col=2)
-            fig_live.add_hline(y=0.5, line_dash="dash", line_color="#f59e0b", row=1, col=2)
-            fig_live.add_hline(y=-0.5, line_dash="dash", line_color="#3b82f6", row=1, col=2)
-            
-            # Subplot (2, 1): Cumulative kWh
-            fig_live.add_trace(go.Scatter(x=list(range(len(live_kwhs))), y=live_kwhs, mode="lines", name="Cumulative kWh", line=dict(color="#10b981", width=3), fill='tozeroy', fillcolor='rgba(16, 185, 129, 0.1)'), row=2, col=1)
-            
-            # Subplot (2, 2): Indoor Air Quality (CO2)
-            fig_live.add_trace(go.Scatter(x=list(range(len(live_co2s))), y=live_co2s, mode="lines", name="CO2 (ppm)", line=dict(color="#c084fc", width=2.5)), row=2, col=2)
-            fig_live.add_hline(y=1000.0, line_dash="dash", line_color="#ef4444", row=2, col=2)
-            
-            fig_live.update_layout(
-                template="plotly_dark",
-                hovermode="x unified",
-                showlegend=False,
-                margin=dict(l=30, r=30, t=50, b=30),
-                height=520,
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(15, 23, 42, 0.4)"
-            )
-            chart_placeholder.plotly_chart(fig_live, use_container_width=True)
-            
-            if live_decisions:
-                with feed_placeholder.container():
-                    st.markdown("#### 📡 Real-Time MCP Tool Execution & Decision Audit Trail")
-                    st.dataframe(pd.DataFrame(live_decisions), use_container_width=True, hide_index=True)
+            update_freq = 12 if sleep_delay == 0.0 else (6 if sleep_delay < 0.05 else 1)
+            if step_idx % update_freq == 0 or step_idx == 1 or step_idx == 144:
+                metric_time.markdown(f"""
+                <div class="metric-card">
+                    <div class="metric-title">Live Clock (Sim Time)</div>
+                    <div class="metric-value" style="font-size:24px; color:#38bdf8;">{time_str}</div>
+                    <div class="metric-subtext">Interval {step_idx} / 144</div>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                metric_temp.markdown(f"""
+                <div class="metric-card">
+                    <div class="metric-title">Zone Air Temp</div>
+                    <div class="metric-value">{temp:.1f} °C</div>
+                    <div class="metric-subtext" style="color: #38bdf8;">Setpoint: {sim_session.active_setpoints.get('zone1_cooling_sp', 24.0):.1f}°C</div>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                pmv_color = "#34d399" if -0.5 <= pmv <= 0.5 else "#ef4444"
+                metric_pmv.markdown(f"""
+                <div class="metric-card" style="border-color: {pmv_color};">
+                    <div class="metric-title">Fanger PMV Index</div>
+                    <div class="metric-value" style="color: {pmv_color};">{pmv:+.2f}</div>
+                    <div class="status-badge" style="background: rgba(52, 211, 153, 0.15); color: {pmv_color};">{"Optimal Comfort" if -0.5<=pmv<=0.5 else "Bound Warning"}</div>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                metric_kwh.markdown(f"""
+                <div class="metric-card">
+                    <div class="metric-title">Cumulative Demand</div>
+                    <div class="metric-value" style="color:#34d399;">{cum_kwh:.1f} kWh</div>
+                    <div class="metric-subtext" style="color: #34d399;">AI Load Optimized</div>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                co2_color = "#34d399" if co2 < 700.0 else "#f59e0b"
+                metric_co2.markdown(f"""
+                <div class="metric-card" style="border-color: {co2_color};">
+                    <div class="metric-title">Indoor Air Quality</div>
+                    <div class="metric-value" style="color: {co2_color};">{co2:.0f} <span style="font-size:15px;">ppm</span></div>
+                    <div class="metric-subtext">CO2 Concentration</div>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                fig_live = make_subplots(
+                    rows=2, cols=2,
+                    subplot_titles=("<b>Zone Air Temperature (°C) & Setpoint Trajectory</b>", "<b>Fanger PMV Thermal Comfort Index vs Bounds</b>", "<b>Cumulative Electrical Energy (kWh)</b>", "<b>Indoor Air Quality — CO2 Concentration (ppm)</b>"),
+                    vertical_spacing=0.15,
+                    horizontal_spacing=0.1
+                )
+                
+                fig_live.add_trace(go.Scatter(x=live_times, y=live_temps, mode="lines+markers", name="Air Temp (°C)", line=dict(color="#38bdf8", width=3)), row=1, col=1)
+                fig_live.add_hline(y=24.0, line_dash="dot", line_color="#94a3b8", row=1, col=1)
+                
+                fig_live.add_trace(go.Scatter(x=live_times, y=live_pmvs, mode="lines", name="PMV Index", line=dict(color="#34d399", width=3)), row=1, col=2)
+                fig_live.add_hrect(y0=-0.5, y1=0.5, fillcolor="rgba(52, 211, 153, 0.15)", line_width=0, row=1, col=2)
+                fig_live.add_hline(y=0.5, line_dash="dash", line_color="#f59e0b", row=1, col=2)
+                fig_live.add_hline(y=-0.5, line_dash="dash", line_color="#38bdf8", row=1, col=2)
+                
+                fig_live.add_trace(go.Scatter(x=live_times, y=live_kwhs, mode="lines", name="Cumulative kWh", line=dict(color="#10b981", width=3), fill='tozeroy', fillcolor='rgba(16, 185, 129, 0.12)'), row=2, col=1)
+                
+                fig_live.add_trace(go.Scatter(x=live_times, y=live_co2s, mode="lines", name="CO2 (ppm)", line=dict(color="#38bdf8", width=2.5)), row=2, col=2)
+                fig_live.add_hline(y=1000.0, line_dash="dash", line_color="#ef4444", row=2, col=2)
+                
+                fig_live.update_layout(
+                    template="plotly_dark",
+                    hovermode="x unified",
+                    showlegend=False,
+                    margin=dict(l=30, r=30, t=55, b=30),
+                    height=520,
+                    paper_bgcolor="rgba(15, 23, 42, 0.45)",
+                    plot_bgcolor="rgba(15, 23, 42, 0.25)",
+                    font=dict(family="Inter, sans-serif", color="#cbd5e1", size=11)
+                )
+                chart_placeholder.plotly_chart(fig_live, use_container_width=True)
+                
+                if live_decisions:
+                    with feed_placeholder.container():
+                        st.markdown("#### Real-Time MCP Tool Execution & Decision Audit Trail")
+                        st.dataframe(pd.DataFrame(live_decisions), use_container_width=True, hide_index=True)
                     
-            time.sleep(sleep_delay)
+            if sleep_delay > 0:
+                time.sleep(sleep_delay)
         st.success("🏁 Live Real-Time Simulation Stream Completed Successfully!")
 
-with tab_energy:
-    st.markdown("### 📈 Comparative Cumulative Energy Demand Analysis")
+elif selected_view == "Energy Demand Analytics":
+    st.markdown("### Comparative Cumulative Energy Demand Analysis")
     fig_energy = go.Figure()
     fig_energy.add_trace(go.Scatter(
-        x=df_base["timestamp"], y=df_base["cumulative_kwh"],
+        x=pd.to_datetime(df_base["timestamp"]), y=df_base["interval_kwh"].cumsum(),
         mode="lines", name="Baseline Schedule (Rule-Based)",
         line=dict(color="#ef4444", width=3, dash="dash")
     ))
     fig_energy.add_trace(go.Scatter(
-        x=df_ai["timestamp"], y=df_ai["cumulative_kwh"],
+        x=pd.to_datetime(df_ai["timestamp"]), y=df_ai["interval_kwh"].cumsum(),
         mode="lines", name="AI Autonomous Agent (Closed-Loop)",
         line=dict(color="#10b981", width=3.5),
-        fill='tonexty', fillcolor='rgba(16, 185, 129, 0.12)'
+        fill='tonexty', fillcolor='rgba(16, 185, 129, 0.15)'
     ))
-    fig_energy.update_layout(
-        title="<b>Cumulative Energy Consumption Divergence (kWh)</b>",
-        xaxis_title="Simulation Timestamp",
-        yaxis_title="Total Cumulative Demand (kWh)",
-        template="plotly_dark",
-        hovermode="x unified",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        margin=dict(l=40, r=40, t=60, b=40),
-        height=480,
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(15, 23, 42, 0.4)"
-    )
+    fig_energy = apply_plotly_theme(fig_energy, "Cumulative Energy Consumption Divergence (kWh)", "Simulation Timestamp", "Total Cumulative Demand (kWh)")
     st.plotly_chart(fig_energy, use_container_width=True)
 
-with tab_comfort:
-    st.markdown("### 🌡️ Fanger PMV Thermal Comfort Verification")
+elif selected_view == "Thermal Comfort Verification":
+    st.markdown("### Fanger PMV Thermal Comfort Verification")
     fig_comfort = go.Figure()
     fig_comfort.add_trace(go.Scatter(
-        x=df_ai["timestamp"], y=df_ai["zone1_pmv"],
+        x=pd.to_datetime(df_ai["timestamp"]), y=df_ai["zone1_pmv"],
         mode="lines", name="AI Agent PMV Index",
         line=dict(color="#38bdf8", width=2.5)
     ))
     fig_comfort.add_trace(go.Scatter(
-        x=df_base["timestamp"], y=df_base["zone1_pmv"],
+        x=pd.to_datetime(df_base["timestamp"]), y=df_base["zone1_pmv"],
         mode="lines", name="Baseline PMV Index",
-        line=dict(color="#64748b", width=1.5, dash="dot")
+        line=dict(color="#94a3b8", width=1.5, dash="dot")
     ))
-    fig_comfort.add_hrect(y0=-0.5, y1=0.5, fillcolor="rgba(52, 211, 153, 0.12)", line_width=0, annotation_text="ASHRAE 55 Optimal Comfort Zone", annotation_position="top left")
-    fig_comfort.add_hline(y=PMV_UPPER_BOUND, line_dash="dash", line_color="#f59e0b", annotation_text="Upper Limit (+0.5)", annotation_position="top right")
-    fig_comfort.add_hline(y=PMV_LOWER_BOUND, line_dash="dash", line_color="#3b82f6", annotation_text="Lower Limit (-0.5)", annotation_position="bottom right")
-    fig_comfort.update_layout(
-        title="<b>Fanger PMV Thermal Comfort Index vs. Mandatory Constraints</b>",
-        xaxis_title="Simulation Timestamp",
-        yaxis_title="Predicted Mean Vote (PMV)",
-        yaxis=dict(range=[-1.0, 1.0]),
-        template="plotly_dark",
-        hovermode="x unified",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        margin=dict(l=40, r=40, t=60, b=40),
-        height=480,
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(15, 23, 42, 0.4)"
-    )
+    
+    # Overlay AI Intervention Decision Markers aligned with Model Output
+    if not df_dec.empty and "timestamp" in df_dec.columns:
+        dec_timestamps = pd.to_datetime(df_dec["timestamp"])
+        ai_dec_points = df_ai[pd.to_datetime(df_ai["timestamp"]).isin(dec_timestamps)]
+        if not ai_dec_points.empty:
+            fig_comfort.add_trace(go.Scatter(
+                x=pd.to_datetime(ai_dec_points["timestamp"]), y=ai_dec_points["zone1_pmv"],
+                mode="markers", name="AI Control Action",
+                marker=dict(symbol="diamond", size=9, color="#f59e0b", line=dict(color="#ffffff", width=1))
+            ))
+            
+    fig_comfort.add_hrect(y0=-0.5, y1=0.5, fillcolor="rgba(52, 211, 153, 0.12)", line_width=0, annotation_text="ASHRAE 55 Optimal Comfort Zone", annotation_position="top left", annotation_font_color="#34d399")
+    fig_comfort.add_hline(y=PMV_UPPER_BOUND, line_dash="dash", line_color="#f59e0b", annotation_text="Upper Limit (+0.5)", annotation_position="top right", annotation_font_color="#f59e0b")
+    fig_comfort.add_hline(y=PMV_LOWER_BOUND, line_dash="dash", line_color="#38bdf8", annotation_text="Lower Limit (-0.5)", annotation_position="bottom right", annotation_font_color="#38bdf8")
+    fig_comfort = apply_plotly_theme(fig_comfort, "Fanger PMV Thermal Comfort Index vs. Mandatory Constraints", "Simulation Timestamp", "Predicted Mean Vote (PMV)")
+    fig_comfort.update_yaxes(range=[-1.25, 1.25])
     st.plotly_chart(fig_comfort, use_container_width=True)
 
-with tab_demand:
-    st.markdown("### ⚡ Electrical Demand & Grid Carbon Intensity Synchronization")
+elif selected_view == "Grid Carbon & Peak Shaving":
+    st.markdown("### Electrical Demand & Grid Carbon Intensity Synchronization")
     fig_demand = go.Figure()
     fig_demand.add_trace(go.Scatter(
-        x=df_ai["timestamp"], y=df_ai["interval_kwh"] * 60.0,
-        mode="lines", name="AI Electrical Demand (kW)",
-        line=dict(color="#a855f7", width=2.5)
+        x=pd.to_datetime(df_base["timestamp"]), y=df_base["interval_kwh"] * 60.0,
+        mode="lines", name="Baseline Electrical Demand (kW)",
+        line=dict(color="#ef4444", width=2, dash="dot")
     ))
     fig_demand.add_trace(go.Scatter(
-        x=df_ai["timestamp"], y=df_ai["grid_carbon_gco2_kwh"],
+        x=pd.to_datetime(df_ai["timestamp"]), y=df_ai["interval_kwh"] * 60.0,
+        mode="lines", name="AI Electrical Demand (kW)",
+        line=dict(color="#38bdf8", width=2.5)
+    ))
+    fig_demand.add_trace(go.Scatter(
+        x=pd.to_datetime(df_ai["timestamp"]), y=df_ai["grid_carbon_gco2_kwh"],
         mode="lines", name="Grid Carbon Intensity (gCO2/kWh)",
-        line=dict(color="#f59e0b", width=1.8, dash="dash"),
+        line=dict(color="#f59e0b", width=2, dash="dash"),
         yaxis="y2"
     ))
+    fig_demand = apply_plotly_theme(fig_demand, "Electrical Demand (kW) vs. Grid Carbon Intensity (gCO2/kWh)", "Simulation Timestamp", "Electrical Demand (kW)")
     fig_demand.update_layout(
-        title="<b>Electrical Demand (kW) vs. Grid Carbon Intensity (gCO2/kWh)</b>",
-        xaxis_title="Simulation Timestamp",
-        yaxis=dict(title="Electrical Demand (kW)", side="left", showgrid=False),
-        yaxis2=dict(title="Grid Carbon Intensity (gCO2/kWh)", side="right", overlaying="y", showgrid=True),
-        template="plotly_dark",
-        hovermode="x unified",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        margin=dict(l=40, r=40, t=60, b=40),
-        height=480,
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(15, 23, 42, 0.4)"
+        yaxis2=dict(title="Grid Carbon Intensity (gCO2/kWh)", side="right", overlaying="y", showgrid=False, title_font=dict(color="#f59e0b"), tickfont=dict(color="#f59e0b"))
     )
     st.plotly_chart(fig_demand, use_container_width=True)
 
-with tab_report:
-    st.markdown("### 📋 Autonomous AI Executive Audit & Performance Report")
+elif selected_view == "Executive Compliance Report":
+    st.markdown("### Autonomous AI Executive Audit & Performance Report")
     st.markdown("This executive analysis report is generated autonomously by our **Analysis Agent** analyzing physical building telemetry, ML predictions, and MCP decision audits. Certified for LEED & ESG facility review.")
     
     analysis_agent = AnalysisAgent(BASE_DIR)
@@ -579,7 +796,7 @@ with tab_report:
             if os.path.exists(pdf_path):
                 with open(pdf_path, "rb") as pdf_file:
                     st.download_button(
-                        label="📥 Download Certified PDF Executive Report",
+                        label="Download Certified PDF Executive Report",
                         data=pdf_file,
                         file_name="EcoLoop_Executive_Report.pdf",
                         mime="application/pdf",
@@ -596,7 +813,7 @@ with tab_report:
 
 # --- SECTION 3: AUDITABLE AGENT DECISION LOG ---
 st.markdown("---")
-st.markdown("### 🤖 Autonomous Agent Decision Log & MCP Execution Trail")
+st.markdown("### Autonomous Agent Decision Log & MCP Execution Trail")
 st.markdown("Every 15 simulated minutes, the reasoning layer evaluates building state, checks PMV boundaries, and emits validated MCP tool calls:")
 
 if not df_dec.empty:

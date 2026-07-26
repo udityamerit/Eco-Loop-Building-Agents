@@ -141,7 +141,6 @@ All telemetry and decision rationales are streamed synchronously to local CSV lo
 
 ---
 
-
 ## 🚀 Setup & Quickstart Guide
 
 ### 1. Clone & Environment Setup

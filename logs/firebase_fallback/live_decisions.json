@@ -12006,5 +12006,836 @@
     "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
     "status": "ACCEPTED",
     "updated_at": "2026-07-26T10:25:34.105191"
+  },
+  {
+    "sim_time_min": 30.0,
+    "timestamp": "2026-07-15 00:30:00",
+    "tool_called": "watchdog_failover",
+    "params": {
+      "zone1_cooling_sp": 24.0,
+      "zone1_heating_sp": 20.0,
+      "zone1_lighting_fraction": 1.0
+    },
+    "rationale": "Watchdog automatic override after repeated validation failures",
+    "status": "WATCHDOG_OVERRIDE",
+    "updated_at": "2026-07-26T11:30:34.685655"
+  },
+  {
+    "sim_time_min": 30.0,
+    "timestamp": "2026-07-15 00:30:00",
+    "tool_called": "watchdog_failover",
+    "params": {
+      "zone1_cooling_sp": 24.0,
+      "zone1_heating_sp": 20.0,
+      "zone1_lighting_fraction": 1.0
+    },
+    "rationale": "Watchdog automatic override after repeated validation failures",
+    "status": "WATCHDOG_OVERRIDE",
+    "updated_at": "2026-07-26T12:06:26.276371"
+  },
+  {
+    "sim_time_min": 1.0,
+    "timestamp": "2026-07-15 00:01:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:27.613099"
+  },
+  {
+    "sim_time_min": 16.0,
+    "timestamp": "2026-07-15 00:16:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:28.575275"
+  },
+  {
+    "sim_time_min": 31.0,
+    "timestamp": "2026-07-15 00:31:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:29.079154"
+  },
+  {
+    "sim_time_min": 46.0,
+    "timestamp": "2026-07-15 00:46:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:29.829716"
+  },
+  {
+    "sim_time_min": 61.0,
+    "timestamp": "2026-07-15 01:01:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:30.341494"
+  },
+  {
+    "sim_time_min": 76.0,
+    "timestamp": "2026-07-15 01:16:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:30.875741"
+  },
+  {
+    "sim_time_min": 91.0,
+    "timestamp": "2026-07-15 01:31:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:31.436027"
+  },
+  {
+    "sim_time_min": 106.0,
+    "timestamp": "2026-07-15 01:46:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:31.960161"
+  },
+  {
+    "sim_time_min": 121.0,
+    "timestamp": "2026-07-15 02:01:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:32.386247"
+  },
+  {
+    "sim_time_min": 136.0,
+    "timestamp": "2026-07-15 02:16:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:33.416846"
+  },
+  {
+    "sim_time_min": 151.0,
+    "timestamp": "2026-07-15 02:31:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "heating",
+      "value": 21.5
+    },
+    "rationale": "Thermal comfort approaching lower boundary (PMV=-0.49, Temp=22.2\u00b0C). Increasing heating setpoint by 1.0\u00b0C.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:34.143885"
+  },
+  {
+    "sim_time_min": 166.0,
+    "timestamp": "2026-07-15 02:46:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "heating",
+      "value": 21.5
+    },
+    "rationale": "Thermal comfort approaching lower boundary (PMV=-0.52, Temp=22.1\u00b0C). Increasing heating setpoint by 1.0\u00b0C.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:34.697580"
+  },
+  {
+    "sim_time_min": 181.0,
+    "timestamp": "2026-07-15 03:01:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "heating",
+      "value": 21.5
+    },
+    "rationale": "Thermal comfort approaching lower boundary (PMV=-0.55, Temp=22.1\u00b0C). Increasing heating setpoint by 1.0\u00b0C.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:35.351888"
+  },
+  {
+    "sim_time_min": 196.0,
+    "timestamp": "2026-07-15 03:16:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "heating",
+      "value": 21.5
+    },
+    "rationale": "Thermal comfort approaching lower boundary (PMV=-0.56, Temp=22.0\u00b0C). Increasing heating setpoint by 1.0\u00b0C.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:35.852954"
+  },
+  {
+    "sim_time_min": 211.0,
+    "timestamp": "2026-07-15 03:31:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "heating",
+      "value": 21.5
+    },
+    "rationale": "Thermal comfort approaching lower boundary (PMV=-0.57, Temp=22.0\u00b0C). Increasing heating setpoint by 1.0\u00b0C.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:36.327246"
+  },
+  {
+    "sim_time_min": 226.0,
+    "timestamp": "2026-07-15 03:46:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "heating",
+      "value": 21.5
+    },
+    "rationale": "Thermal comfort approaching lower boundary (PMV=-0.56, Temp=22.0\u00b0C). Increasing heating setpoint by 1.0\u00b0C.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:36.784635"
+  },
+  {
+    "sim_time_min": 241.0,
+    "timestamp": "2026-07-15 04:01:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "heating",
+      "value": 21.5
+    },
+    "rationale": "Thermal comfort approaching lower boundary (PMV=-0.55, Temp=22.0\u00b0C). Increasing heating setpoint by 1.0\u00b0C.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:37.240676"
+  },
+  {
+    "sim_time_min": 256.0,
+    "timestamp": "2026-07-15 04:16:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "heating",
+      "value": 21.5
+    },
+    "rationale": "Thermal comfort approaching lower boundary (PMV=-0.53, Temp=22.1\u00b0C). Increasing heating setpoint by 1.0\u00b0C.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:37.705077"
+  },
+  {
+    "sim_time_min": 271.0,
+    "timestamp": "2026-07-15 04:31:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "heating",
+      "value": 21.5
+    },
+    "rationale": "Thermal comfort approaching lower boundary (PMV=-0.50, Temp=22.2\u00b0C). Increasing heating setpoint by 1.0\u00b0C.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:38.358409"
+  },
+  {
+    "sim_time_min": 286.0,
+    "timestamp": "2026-07-15 04:46:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "heating",
+      "value": 21.5
+    },
+    "rationale": "Thermal comfort approaching lower boundary (PMV=-0.46, Temp=22.3\u00b0C). Increasing heating setpoint by 1.0\u00b0C.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:38.938246"
+  },
+  {
+    "sim_time_min": 301.0,
+    "timestamp": "2026-07-15 05:01:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:39.377329"
+  },
+  {
+    "sim_time_min": 316.0,
+    "timestamp": "2026-07-15 05:16:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:39.811052"
+  },
+  {
+    "sim_time_min": 331.0,
+    "timestamp": "2026-07-15 05:31:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:40.301093"
+  },
+  {
+    "sim_time_min": 346.0,
+    "timestamp": "2026-07-15 05:46:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:40.788754"
+  },
+  {
+    "sim_time_min": 361.0,
+    "timestamp": "2026-07-15 06:01:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:41.291514"
+  },
+  {
+    "sim_time_min": 376.0,
+    "timestamp": "2026-07-15 06:16:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:41.801007"
+  },
+  {
+    "sim_time_min": 391.0,
+    "timestamp": "2026-07-15 06:31:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:42.488298"
+  },
+  {
+    "sim_time_min": 406.0,
+    "timestamp": "2026-07-15 06:46:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:42.973549"
+  },
+  {
+    "sim_time_min": 421.0,
+    "timestamp": "2026-07-15 07:01:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:44.270584"
+  },
+  {
+    "sim_time_min": 436.0,
+    "timestamp": "2026-07-15 07:16:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:45.258677"
+  },
+  {
+    "sim_time_min": 451.0,
+    "timestamp": "2026-07-15 07:31:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:45.894403"
+  },
+  {
+    "sim_time_min": 466.0,
+    "timestamp": "2026-07-15 07:46:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:46.534009"
+  },
+  {
+    "sim_time_min": 481.0,
+    "timestamp": "2026-07-15 08:01:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "cooling",
+      "value": 23.4
+    },
+    "rationale": "Thermal comfort approaching upper boundary (PMV=0.60, Temp=24.4\u00b0C). Lowering cooling setpoint by 1.0\u00b0C to restore optimal comfort.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:47.405215"
+  },
+  {
+    "sim_time_min": 496.0,
+    "timestamp": "2026-07-15 08:16:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "cooling",
+      "value": 23.5
+    },
+    "rationale": "Thermal comfort approaching upper boundary (PMV=0.64, Temp=24.5\u00b0C). Lowering cooling setpoint by 1.0\u00b0C to restore optimal comfort.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:47.993193"
+  },
+  {
+    "sim_time_min": 511.0,
+    "timestamp": "2026-07-15 08:31:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "cooling",
+      "value": 23.6
+    },
+    "rationale": "Thermal comfort approaching upper boundary (PMV=0.69, Temp=24.6\u00b0C). Lowering cooling setpoint by 1.0\u00b0C to restore optimal comfort.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:48.625129"
+  },
+  {
+    "sim_time_min": 526.0,
+    "timestamp": "2026-07-15 08:46:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "cooling",
+      "value": 23.8
+    },
+    "rationale": "Thermal comfort approaching upper boundary (PMV=0.75, Temp=24.8\u00b0C). Lowering cooling setpoint by 1.0\u00b0C to restore optimal comfort.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:49.135488"
+  },
+  {
+    "sim_time_min": 541.0,
+    "timestamp": "2026-07-15 09:01:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "cooling",
+      "value": 24.0
+    },
+    "rationale": "Thermal comfort approaching upper boundary (PMV=0.84, Temp=25.0\u00b0C). Lowering cooling setpoint by 1.0\u00b0C to restore optimal comfort.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:49.653947"
+  },
+  {
+    "sim_time_min": 556.0,
+    "timestamp": "2026-07-15 09:16:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "cooling",
+      "value": 24.2
+    },
+    "rationale": "Thermal comfort approaching upper boundary (PMV=0.93, Temp=25.2\u00b0C). Lowering cooling setpoint by 1.0\u00b0C to restore optimal comfort.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:50.293393"
+  },
+  {
+    "sim_time_min": 571.0,
+    "timestamp": "2026-07-15 09:31:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "cooling",
+      "value": 24.5
+    },
+    "rationale": "Thermal comfort approaching upper boundary (PMV=1.00, Temp=25.5\u00b0C). Lowering cooling setpoint by 1.0\u00b0C to restore optimal comfort.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:51.051624"
+  },
+  {
+    "sim_time_min": 586.0,
+    "timestamp": "2026-07-15 09:46:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "cooling",
+      "value": 24.8
+    },
+    "rationale": "Thermal comfort approaching upper boundary (PMV=1.00, Temp=25.8\u00b0C). Lowering cooling setpoint by 1.0\u00b0C to restore optimal comfort.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:51.517920"
+  },
+  {
+    "sim_time_min": 601.0,
+    "timestamp": "2026-07-15 10:01:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "cooling",
+      "value": 25.1
+    },
+    "rationale": "Thermal comfort approaching upper boundary (PMV=1.00, Temp=26.1\u00b0C). Lowering cooling setpoint by 1.0\u00b0C to restore optimal comfort.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:52.087421"
+  },
+  {
+    "sim_time_min": 616.0,
+    "timestamp": "2026-07-15 10:16:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "cooling",
+      "value": 25.4
+    },
+    "rationale": "Thermal comfort approaching upper boundary (PMV=1.00, Temp=26.4\u00b0C). Lowering cooling setpoint by 1.0\u00b0C to restore optimal comfort.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:54.039820"
+  },
+  {
+    "sim_time_min": 631.0,
+    "timestamp": "2026-07-15 10:31:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "cooling",
+      "value": 25.7
+    },
+    "rationale": "Thermal comfort approaching upper boundary (PMV=1.00, Temp=26.7\u00b0C). Lowering cooling setpoint by 1.0\u00b0C to restore optimal comfort.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T12:52:54.637729"
+  },
+  {
+    "sim_time_min": 30.0,
+    "timestamp": "2026-07-15 00:30:00",
+    "tool_called": "watchdog_failover",
+    "params": {
+      "zone1_cooling_sp": 24.0,
+      "zone1_heating_sp": 20.0,
+      "zone1_lighting_fraction": 1.0
+    },
+    "rationale": "Watchdog automatic override after repeated validation failures",
+    "status": "WATCHDOG_OVERRIDE",
+    "updated_at": "2026-07-26T12:57:54.708919"
+  },
+  {
+    "sim_time_min": 30.0,
+    "timestamp": "2026-07-15 00:30:00",
+    "tool_called": "watchdog_failover",
+    "params": {
+      "zone1_cooling_sp": 24.0,
+      "zone1_heating_sp": 20.0,
+      "zone1_lighting_fraction": 1.0
+    },
+    "rationale": "Watchdog automatic override after repeated validation failures",
+    "status": "WATCHDOG_OVERRIDE",
+    "updated_at": "2026-07-26T13:11:52.831077"
+  },
+  {
+    "sim_time_min": 1.0,
+    "timestamp": "2026-07-15 00:01:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T13:37:44.728446"
+  },
+  {
+    "sim_time_min": 16.0,
+    "timestamp": "2026-07-15 00:16:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T13:37:48.841271"
+  },
+  {
+    "sim_time_min": 31.0,
+    "timestamp": "2026-07-15 00:31:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T13:37:51.910719"
+  },
+  {
+    "sim_time_min": 46.0,
+    "timestamp": "2026-07-15 00:46:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T13:37:55.635407"
+  },
+  {
+    "sim_time_min": 61.0,
+    "timestamp": "2026-07-15 01:01:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T13:37:59.345269"
+  },
+  {
+    "sim_time_min": 76.0,
+    "timestamp": "2026-07-15 01:16:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T13:38:02.657440"
+  },
+  {
+    "sim_time_min": 91.0,
+    "timestamp": "2026-07-15 01:31:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T13:38:05.591603"
+  },
+  {
+    "sim_time_min": 106.0,
+    "timestamp": "2026-07-15 01:46:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T13:38:09.042023"
+  },
+  {
+    "sim_time_min": 121.0,
+    "timestamp": "2026-07-15 02:01:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T13:38:12.022761"
+  },
+  {
+    "sim_time_min": 136.0,
+    "timestamp": "2026-07-15 02:16:00",
+    "tool_called": "apply_ecm",
+    "params": {
+      "ecm_name": "reduce_lighting_load",
+      "params": {
+        "zone_id": "ZONE1",
+        "reduction_pct": 40
+      }
+    },
+    "rationale": "Zone is currently unoccupied. Reducing lighting power fraction by 40% to save baseline energy.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T13:38:15.311354"
+  },
+  {
+    "sim_time_min": 30.0,
+    "timestamp": "2026-07-15 00:30:00",
+    "tool_called": "watchdog_failover",
+    "params": {
+      "zone1_cooling_sp": 24.0,
+      "zone1_heating_sp": 20.0,
+      "zone1_lighting_fraction": 1.0
+    },
+    "rationale": "Watchdog automatic override after repeated validation failures",
+    "status": "WATCHDOG_OVERRIDE",
+    "updated_at": "2026-07-26T13:53:40.175027"
+  },
+  {
+    "sim_time_min": 30.0,
+    "timestamp": "2026-07-15 00:30:00",
+    "tool_called": "watchdog_failover",
+    "params": {
+      "zone1_cooling_sp": 24.0,
+      "zone1_heating_sp": 20.0,
+      "zone1_lighting_fraction": 1.0
+    },
+    "rationale": "Watchdog automatic override after repeated validation failures",
+    "status": "WATCHDOG_OVERRIDE",
+    "updated_at": "2026-07-26T14:00:29.107049"
   }
 ]
