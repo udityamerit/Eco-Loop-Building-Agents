@@ -747,9 +747,9 @@ elif selected_view == "Real-Time Telemetry Stream":
                 chart_placeholder.plotly_chart(fig_live, use_container_width=True)
                 
                 if live_decisions:
-                    with feed_placeholder.container():
+                    with feed_placeholder.container(height=350, border=True):
                         st.markdown("#### Real-Time MCP Tool Execution & Decision Audit Trail")
-                        st.dataframe(pd.DataFrame(live_decisions), use_container_width=True, hide_index=True)
+                        st.table(pd.DataFrame(live_decisions).reset_index(drop=True))
                     
             if sleep_delay > 0:
                 time.sleep(sleep_delay)
@@ -791,7 +791,7 @@ elif selected_view == "🏆 Executive Performance & Results Summary":
         {"Performance Metric": "Grid Carbon Footprint (kg CO2)", "Static Baseline Schedule": f"{base_carbon_kg:,.1f} kg", "Eco-Loop AI Closed-Loop": f"{ai_carbon_kg:,.1f} kg", "Net Variance / Saving": f"-{carbon_saved_kg:,.1f} kg (-{carbon_saved_pct:.1f}%)", "Audit Status": "🟢 DECARBONIZED"},
         {"Performance Metric": "ASHRAE 55 Thermal Violations", "Static Baseline Schedule": "0 intervals (0%)", "Eco-Loop AI Closed-Loop": f"{pmv_violations} intervals (0%)", "Net Variance / Saving": "0.0% difference", "Audit Status": "🟢 100% COMPLIANT"},
     ]
-    st.dataframe(pd.DataFrame(summary_data), use_container_width=True, hide_index=True)
+    st.table(pd.DataFrame(summary_data).set_index("Performance Metric"))
     
     st.markdown("<br>", unsafe_allow_html=True)
     
@@ -802,7 +802,7 @@ elif selected_view == "🏆 Executive Performance & Results Summary":
         if not df_dec.empty and "tool_called" in df_dec.columns:
             tool_counts = df_dec["tool_called"].value_counts().reset_index()
             tool_counts.columns = ["MCP Tool Invoked", "Execution Count"]
-            st.dataframe(tool_counts, use_container_width=True, hide_index=True)
+            st.table(tool_counts.set_index("MCP Tool Invoked"))
         else:
             st.info("No tool decisions logged yet.")
     with col_dec_exp:
@@ -1003,11 +1003,7 @@ st.markdown("Every 15 simulated minutes, the reasoning layer evaluates building 
 
 if not df_dec.empty:
     df_display = df_dec.sort_values(by="sim_time_min", ascending=False).copy()
-    st.dataframe(
-        df_display[["timestamp", "tool_called", "params", "rationale", "status"]],
-        use_container_width=True,
-        height=400,
-        hide_index=True
-    )
+    with st.container(height=450, border=True):
+        st.table(df_display[["timestamp", "tool_called", "params", "rationale", "status"]].reset_index(drop=True))
 else:
     st.info("No decision logs recorded yet.")
