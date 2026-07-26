@@ -11269,5 +11269,187 @@
     "rationale": "Thermal comfort approaching upper boundary (PMV=1.00, Temp=26.7\u00b0C). Lowering cooling setpoint by 1.0\u00b0C to restore optimal comfort.",
     "status": "ACCEPTED",
     "updated_at": "2026-07-26T10:17:54.876150"
+  },
+  {
+    "sim_time_min": 3541.0,
+    "timestamp": "2026-07-17 11:01:00",
+    "tool_called": "watchdog_failover",
+    "params": {
+      "zone1_cooling_sp": 25.7,
+      "zone1_heating_sp": 21.5,
+      "zone1_lighting_fraction": 0.5
+    },
+    "rationale": "Watchdog automatic override after repeated validation failures",
+    "status": "WATCHDOG_OVERRIDE",
+    "updated_at": "2026-07-26T10:18:13.606005"
+  },
+  {
+    "sim_time_min": 3556.0,
+    "timestamp": "2026-07-17 11:16:00",
+    "tool_called": "watchdog_failover",
+    "params": {
+      "zone1_cooling_sp": 25.7,
+      "zone1_heating_sp": 21.5,
+      "zone1_lighting_fraction": 0.5
+    },
+    "rationale": "Watchdog automatic override after repeated validation failures",
+    "status": "WATCHDOG_OVERRIDE",
+    "updated_at": "2026-07-26T10:18:22.301126"
+  },
+  {
+    "sim_time_min": 3571.0,
+    "timestamp": "2026-07-17 11:31:00",
+    "tool_called": "watchdog_failover",
+    "params": {
+      "zone1_cooling_sp": 25.7,
+      "zone1_heating_sp": 21.5,
+      "zone1_lighting_fraction": 0.5
+    },
+    "rationale": "Watchdog automatic override after repeated validation failures",
+    "status": "WATCHDOG_OVERRIDE",
+    "updated_at": "2026-07-26T10:18:35.546272"
+  },
+  {
+    "sim_time_min": 3586.0,
+    "timestamp": "2026-07-17 11:46:00",
+    "tool_called": "watchdog_failover",
+    "params": {
+      "zone1_cooling_sp": 25.7,
+      "zone1_heating_sp": 21.5,
+      "zone1_lighting_fraction": 0.5
+    },
+    "rationale": "Watchdog automatic override after repeated validation failures",
+    "status": "WATCHDOG_OVERRIDE",
+    "updated_at": "2026-07-26T10:19:04.619823"
+  },
+  {
+    "sim_time_min": 3601.0,
+    "timestamp": "2026-07-17 12:01:00",
+    "tool_called": "watchdog_failover",
+    "params": {
+      "zone1_cooling_sp": 25.7,
+      "zone1_heating_sp": 21.5,
+      "zone1_lighting_fraction": 0.5
+    },
+    "rationale": "Watchdog automatic override after repeated validation failures",
+    "status": "WATCHDOG_OVERRIDE",
+    "updated_at": "2026-07-26T10:19:36.034909"
+  },
+  {
+    "sim_time_min": 3616.0,
+    "timestamp": "2026-07-17 12:16:00",
+    "tool_called": "watchdog_failover",
+    "params": {
+      "zone1_cooling_sp": 25.7,
+      "zone1_heating_sp": 21.5,
+      "zone1_lighting_fraction": 0.5
+    },
+    "rationale": "Watchdog automatic override after repeated validation failures",
+    "status": "WATCHDOG_OVERRIDE",
+    "updated_at": "2026-07-26T10:19:47.568944"
+  },
+  {
+    "sim_time_min": 3631.0,
+    "timestamp": "2026-07-17 12:31:00",
+    "tool_called": "watchdog_failover",
+    "params": {
+      "zone1_cooling_sp": 25.7,
+      "zone1_heating_sp": 21.5,
+      "zone1_lighting_fraction": 0.5
+    },
+    "rationale": "Watchdog automatic override after repeated validation failures",
+    "status": "WATCHDOG_OVERRIDE",
+    "updated_at": "2026-07-26T10:19:55.956394"
+  },
+  {
+    "sim_time_min": 3646.0,
+    "timestamp": "2026-07-17 12:46:00",
+    "tool_called": "watchdog_failover",
+    "params": {
+      "zone1_cooling_sp": 25.7,
+      "zone1_heating_sp": 21.5,
+      "zone1_lighting_fraction": 0.5
+    },
+    "rationale": "Watchdog automatic override after repeated validation failures",
+    "status": "WATCHDOG_OVERRIDE",
+    "updated_at": "2026-07-26T10:20:04.880319"
+  },
+  {
+    "sim_time_min": 3661.0,
+    "timestamp": "2026-07-17 13:01:00",
+    "tool_called": "watchdog_failover",
+    "params": {
+      "zone1_cooling_sp": 25.7,
+      "zone1_heating_sp": 21.5,
+      "zone1_lighting_fraction": 0.5
+    },
+    "rationale": "Watchdog automatic override after repeated validation failures",
+    "status": "WATCHDOG_OVERRIDE",
+    "updated_at": "2026-07-26T10:20:13.349040"
+  },
+  {
+    "sim_time_min": 3676.0,
+    "timestamp": "2026-07-17 13:16:00",
+    "tool_called": "watchdog_failover",
+    "params": {
+      "zone1_cooling_sp": 25.7,
+      "zone1_heating_sp": 21.5,
+      "zone1_lighting_fraction": 0.5
+    },
+    "rationale": "Watchdog automatic override after repeated validation failures",
+    "status": "WATCHDOG_OVERRIDE",
+    "updated_at": "2026-07-26T10:20:21.895944"
+  },
+  {
+    "sim_time_min": 3691.0,
+    "timestamp": "2026-07-17 13:31:00",
+    "tool_called": "watchdog_failover",
+    "params": {
+      "zone1_cooling_sp": 25.7,
+      "zone1_heating_sp": 21.5,
+      "zone1_lighting_fraction": 0.5
+    },
+    "rationale": "Watchdog automatic override after repeated validation failures",
+    "status": "WATCHDOG_OVERRIDE",
+    "updated_at": "2026-07-26T10:20:31.485382"
+  },
+  {
+    "sim_time_min": 3706.0,
+    "timestamp": "2026-07-17 13:46:00",
+    "tool_called": "watchdog_failover",
+    "params": {
+      "zone1_cooling_sp": 25.7,
+      "zone1_heating_sp": 21.5,
+      "zone1_lighting_fraction": 0.5
+    },
+    "rationale": "Watchdog automatic override after repeated validation failures",
+    "status": "WATCHDOG_OVERRIDE",
+    "updated_at": "2026-07-26T10:20:39.879420"
+  },
+  {
+    "sim_time_min": 3721.0,
+    "timestamp": "2026-07-17 14:01:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "cooling",
+      "value": 24.0
+    },
+    "rationale": "Building state and thermal comfort are stable within optimal bounds. Maintaining 24.0\u00b0C cooling setpoint.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:20:49.523958"
+  },
+  {
+    "sim_time_min": 3736.0,
+    "timestamp": "2026-07-17 14:16:00",
+    "tool_called": "set_zone_setpoint",
+    "params": {
+      "zone_id": "ZONE1",
+      "setpoint_type": "cooling",
+      "value": 24.0
+    },
+    "rationale": "Building state and thermal comfort are stable within optimal bounds. Maintaining 24.0\u00b0C cooling setpoint.",
+    "status": "ACCEPTED",
+    "updated_at": "2026-07-26T10:20:59.441087"
   }
 ]
